@@ -16,6 +16,12 @@ Built with **Vite + TypeScript + three.js**. No external assets, no network call
 backend: every texture and every data set is generated procedurally at runtime, so the
 build is fully self-contained and reproducible.
 
+That promise is enforced, not just stated. `scripts/selfcontained-check.mjs` scans the
+built output for external URLs, network APIs (`fetch`, `XMLHttpRequest`, `WebSocket`,
+`EventSource`, `sendBeacon`) and web fonts, and fails the release if any appear. The
+build also disables Vite's modulepreload polyfill, so the shipped bundle issues no
+request at all — copy `dist/` onto a machine with no network access and it still runs.
+
 ## Screenshots
 
 | Operations overview (English) | Transport board (Traditional Chinese) |
@@ -161,6 +167,7 @@ npm run preview    # serve the production build on http://127.0.0.1:4173
 npm test           # vitest suite (69 tests)
 npm run typecheck  # tsc --noEmit
 npm run audit:contrast  # WCAG 2.1 contrast audit (light theme)
+npm run audit:selfcontained # verify the build makes no external requests
 npm run i18n:check # dictionary completeness + no untranslated strings
 npm run i18n:keys  # print every translation key and where it is used
 npm run og         # regenerate public/og.png (needs: npm i -D sharp)
@@ -187,6 +194,7 @@ src/
 scripts/      contrast-audit.mjs (WCAG 2.1 palette audit)
               i18n-scan.mjs (AST scanner) · i18n-check.mjs (dictionary gate)
               predeploy.mjs (release gate) · generate-og.mjs (share card)
+              selfcontained-check.mjs (no-external-dependency audit)
 public/      og.png (Open Graph / Twitter card, 1200x630)
 docs/        architecture.md · screenshots/
 ```
@@ -221,11 +229,11 @@ translated messages without depending on the UI.
   failure card is shown if the GPU stack is unavailable; all engine handlers are
   guarded, so one failing task can never halt the simulation loop.
 - **Release gate** — `npm run predeploy` is the single command that has to pass before
-  the site is published: type check → unit + invariant tests → i18n dictionary audit →
-  WCAG contrast audit → production build → `dist/` integrity (the root must contain
-  `index.html`, every asset referenced by it must exist, and no stray or stale files may
-  be shipped) → bundle budget (total ≤ 1.5 MB, largest asset ≤ 700 KB). It exits
-  non-zero on the first failure and is wired into CI.
+  the site is published: type check → unit + invariant + stress tests → i18n dictionary
+  audit → WCAG contrast audit → production build → self-containment audit → `dist/`
+  integrity (the root must contain `index.html`, every asset referenced by it must
+  exist, and no stray or stale files may be shipped) → bundle budget (total ≤ 1.5 MB,
+  largest asset ≤ 700 KB). It exits non-zero on the first failure and is wired into CI.
 
 ## Testing
 

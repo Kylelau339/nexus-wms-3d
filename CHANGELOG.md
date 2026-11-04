@@ -16,6 +16,13 @@ All notable changes to this project are documented here. The format follows
 - `og:image`, `og:image:alt`, `twitter:card`, `twitter:title`, `twitter:description`
   and `twitter:image` meta tags. The title and description switch with the
   interface language, and `og:locale` alternates between `zh_TW` and `en_US`.
+- **Self-containment audit** (`scripts/selfcontained-check.mjs`) — the project's central
+  promise is that the built site has no external dependencies, no CDN, no web font and
+  makes no network request at all. That promise was previously only maintained by hand.
+  The audit scans the built output for external URLs, network APIs (`fetch`,
+  `XMLHttpRequest`, `WebSocket`, `EventSource`, `sendBeacon`, `importScripts`) and web
+  font references, and fails the release if any appear. It also verifies that every
+  local asset referenced by the HTML exists.
 - **GitHub Pages deployment workflow** (`.github/workflows/pages.yml`) — publishes
   `dist/` on every push to `main`, so the repository carries a live demo of
   itself. Works from a project sub-path because the build emits relative asset
@@ -29,6 +36,9 @@ All notable changes to this project are documented here. The format follows
 
 ### Changed
 
+- Vite's modulepreload polyfill is now disabled. The project has no dynamic imports,
+  so the polyfill was dead weight — and it was the only thing in the bundle that
+  issued a network request at runtime. The shipped site now makes no request at all.
 - `scripts/predeploy.mjs` now recognises files copied from `public/` — they are
   referenced from a `content="…"` attribute, which the asset scan did not see.
   The stray-file check still rejects anything that is genuinely not part of the

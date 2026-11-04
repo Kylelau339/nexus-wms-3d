@@ -55,11 +55,17 @@ const distOnly = process.argv.includes('--dist-only');
 
 if (!distOnly) {
   run('type check', 'npx tsc --noEmit');
-  run('unit + invariant tests', 'npx vitest run');
+  run('unit + invariant + stress tests', 'npx vitest run');
   run('i18n dictionary audit', 'node scripts/i18n-check.mjs');
   run('WCAG contrast audit', 'node scripts/contrast-audit.mjs');
   run('production build', 'npx vite build');
 }
+
+/**
+ * The self-containment audit always runs — it inspects the built output, which
+ * is the thing being published, so it is relevant even for `--dist-only`.
+ */
+run('self-containment audit', 'node scripts/selfcontained-check.mjs');
 
 /* ------------------------------------------------------- 2. dist integrity */
 

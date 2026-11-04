@@ -36,6 +36,7 @@
     "i18n:check": "node scripts/i18n-check.mjs",
     "i18n:keys": "node scripts/i18n-scan.mjs src --keys",
     "og": "node scripts/generate-og.mjs",
+    "audit:selfcontained": "node scripts/selfcontained-check.mjs",
     "predeploy": "node scripts/predeploy.mjs"
   },
   "dependencies": {
