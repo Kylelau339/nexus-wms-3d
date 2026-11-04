@@ -15,6 +15,17 @@ All notable changes to this project are documented here. The format follows
   exactly one `h1` with no skipped heading levels, every `aria-labelledby` /
   `aria-describedby` / `aria-controls` reference resolves, a polite live region
   exists, the landmarks are named and the keyboard order is intact.
+- **Performance budgets** (`src/domain/__tests__/performance.test.ts`, 4 tests) —
+  the performance claims are now measured rather than asserted. A simulation step
+  must cost less than 2 ms, a full stock-ledger scan less than 8 ms, and the heap
+  may not grow by more than 2 MB across a thousand steps. The budgets are
+  deliberately loose: they are a regression tripwire, so a change that makes the
+  engine twice as slow fails the build while a 3% slowdown does not. Measured on a
+  developer machine: **0.25 ms** per simulation step, **0.06 ms** per ledger scan,
+  **597 KB** of heap growth across 1000 steps.
+- `vitest.config.ts` — the worker threads are started with `--expose-gc` so the
+  memory budget measures real heap growth instead of everything that merely has
+  not been collected yet.
 - **Open Graph share card** — `public/og.png` (1200×630), generated procedurally by
   `scripts/generate-og.mjs` from the same design tokens as the application, so a
   shared link shows a real preview instead of a blank rectangle. The generator

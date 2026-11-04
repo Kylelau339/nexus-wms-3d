@@ -4,7 +4,7 @@
 ![Pages](https://github.com/Kylelau339/nexus-wms-3d/actions/workflows/pages.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue.svg)
-![Tests](https://img.shields.io/badge/tests-81%20passing-brightgreen.svg)
+![Tests](https://img.shields.io/badge/tests-85%20passing-brightgreen.svg)
 
 # NEXUS WMS 3D — 智慧倉儲與物流運輸全流程數位孿生
 
@@ -171,7 +171,9 @@ npm install
 npm run dev        # dev server on http://127.0.0.1:5173
 npm run build      # typecheck + production build into dist/
 npm run preview    # serve the production build on http://127.0.0.1:4173
-npm test           # vitest suite (81 tests)
+npm test           # vitest suite (85 tests)
+npm run test:perf  # performance budgets only
+npm run test:a11y  # accessibility audit only
 npm run typecheck  # tsc --noEmit
 npm run audit:contrast  # WCAG 2.1 contrast audit (light theme)
 npm run audit:selfcontained # verify the build makes no external requests
@@ -193,6 +195,7 @@ src/
                labels.ts (bilingual record helpers) · engine.ts (simulation core)
   core/__tests__/  i18n.test.ts
   domain/__tests__/  engine.test.ts · invariants.test.ts · stress.test.ts
+                     performance.test.ts
   ui/__tests__/    a11y.test.ts
   three/       scene.ts (renderer/camera/picking) · warehouse.ts (geometry)
                actors.ts (trucks/workers/AGVs) · overlays.ts (paths/markers)
@@ -232,7 +235,14 @@ translated messages without depending on the UI.
   when a truck departs.
 - **Performance** — no per-frame allocations in the hot path, instanced geometry,
   emissive materials instead of point lights (a forward renderer pays per light per
-  fragment), throttled DOM updates and scroll-preserving panel refresh.
+  fragment), throttled DOM updates and scroll-preserving panel refresh. The engine's
+  cost is measured rather than asserted: a simulation step takes **≈0.25 ms** and the
+  full stock-ledger scan **≈0.06 ms** on a developer machine, against a 16.7 ms
+  frame — and `src/domain/__tests__/performance.test.ts` fails the build if either
+  regresses past its budget.
+- **Adaptive quality** — the renderer drops the pixel ratio, then shadows, if the
+  measured frame rate collapses, so the interface stays usable on integrated GPUs
+  instead of simply running slowly.
 - **Robustness** — WebGL support is detected before initialisation and a readable
   failure card is shown if the GPU stack is unavailable; all engine handlers are
   guarded, so one failing task can never halt the simulation loop.
@@ -249,7 +259,7 @@ translated messages without depending on the UI.
 npm test
 ```
 
-81 tests in five suites:
+85 tests in six suites:
 
 - `engine.test.ts` (25) — RNG determinism, layout integrity, inventory conservation and
   reservations, pick-path optimisation, wave planning, engine bootstrap, the full order
@@ -265,6 +275,11 @@ npm test
   overflows the pick capacity, a truck arriving while every dock is busy — would slip past a
   one-seed suite. The suite also asserts that the seeds genuinely diverge (12 distinct
   outcome profiles), so it cannot silently degrade into testing one branch twelve times.
+- `performance.test.ts` (4) — measured budgets, not claims. A simulation step must cost
+  less than 2 ms, a full ledger scan less than 8 ms, and the heap may not grow by more
+  than 2 MB across a thousand steps. The budgets are deliberately loose — they are a
+  regression tripwire, not a benchmark, so a change that makes the engine twice as slow
+  fails the build while a 3% slowdown does not.
 - `a11y.test.ts` (12) — the rendered interface is mounted in a DOM and audited for the
   structural rules a colour contrast check can never catch: every interactive control has
   an accessible name, images and graphics are labelled, form controls have labels, there is

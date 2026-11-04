@@ -33,6 +33,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:a11y": "vitest run src/ui/__tests__/a11y.test.ts",
+    "test:perf": "vitest run src/domain/__tests__/performance.test.ts",
     "audit:contrast": "node scripts/contrast-audit.mjs",
     "i18n:check": "node scripts/i18n-check.mjs",
     "i18n:keys": "node scripts/i18n-scan.mjs src --keys",
