@@ -9,12 +9,13 @@ not visible from the interface.
 ## 1. Layering
 
 ```
-src/core/      rng.ts · events.ts · i18n.ts · dictionary.ts
+src/core/      rng.ts · events.ts · i18n.ts · dictionary.ts · resilience.ts
 src/domain/    types.ts · layout.ts · catalog.ts · inventory.ts
                picking.ts · resources.ts · labels.ts · engine.ts
 src/three/     scene.ts · warehouse.ts · actors.ts · overlays.ts
                materials.ts · textures.ts
 src/ui/        app.ts · sections.ts · inspector.ts · charts.ts · dom.ts
+               incidents.ts
 ```
 
 The dependency direction is strictly downwards:
@@ -228,7 +229,46 @@ in the primary locale and the dictionary can be validated mechanically. The
 
 ---
 
-## 7. Extension points
+## 7. Runtime resilience
+
+`core/resilience.ts` is the layer between "something went wrong" and "the
+operator knows something went wrong". It has three parts:
+
+| Primitive | Responsibility |
+|-----------|----------------|
+| `IncidentLog` | A bounded, throttled log of runtime incidents. Reporting the same incident kind inside the throttle window is suppressed, so a subsystem that fails on every frame still produces one notice. |
+| `LoopGuard` | Wraps the per-frame callback. A single throwing frame does not kill the loop; a run of them does, and the loop stops scheduling itself instead of filling the console at the frame rate. |
+| `bindContextRecovery` | Watches a canvas for `webglcontextlost` / `webglcontextrestored`. The loss event has to be cancelled, or the browser will never restore the context. |
+
+`three/scene.ts` uses all three: the guard wraps the frame, the context handler
+sets a flag that skips the scene update and the draw, and both report to the
+shared `incidents` log.
+
+The split between the scene update and the frame loop is what makes the
+degradation graceful. While the GPU context is gone the 3D work is skipped but
+the frame callbacks still run, so the simulation keeps advancing and the 2D
+panels stay live:
+
+```
+frame()
+ ├── context lost? ── no ──▶ updateScene()   (camera, actors, stock, beacons)
+ ├── frame callbacks         (engine.advance — always runs)
+ └── context lost? ── no ──▶ controls.update() + renderer.render()
+```
+
+`ui/incidents.ts` turns the log into the operator-facing notices. The wording
+comes from a `labelTable`, so a notice is re-rendered in the current language
+after a language switch rather than frozen at the moment it was raised.
+
+`scripts/resilience-audit.mjs` exercises the whole path in a real browser: it
+loses the GPU context through the `WEBGL_lose_context` extension and asserts
+that the loss is reported, that the notice follows a language switch, that the
+simulation keeps running, that the restoration is reported and that the console
+stays clean.
+
+---
+
+## 8. Extension points
 
 | To change | Edit |
 |-----------|------|
@@ -240,6 +280,7 @@ in the primary locale and the dictionary can be validated mechanically. The
 | A new panel | `ui/sections.ts` — add a `SectionId`, a `render*` function and a rail entry in `ui/app.ts` |
 | The theme | `styles/main.css` tokens, then run `npm run audit:contrast` |
 | A new language | `core/i18n.ts` (`LANGS`, `LOCALES`, `HTML_LANG`) and a dictionary module |
+| A new runtime failure kind | `core/resilience.ts` (report it) and `ui/incidents.ts` (`INCIDENT_TEXT`) |
 
 When you add a user-visible string, remember to add it to the English
 dictionary in the same commit — `npm run i18n:check` will tell you if you

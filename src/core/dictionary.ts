@@ -346,6 +346,14 @@ export const EN: Record<string, Translation> = {
   '揀貨出庫 {0}': 'Pick issue {0}',
   '{0} 區': 'Zone {0}',
 
+  /* --------------------------------------------------- runtime incidents */
+  '顯示引擎已暫停，正在等待 GPU 恢復': 'Rendering paused, waiting for the GPU to recover',
+  '顯示引擎已恢復': 'Rendering resumed',
+  '畫面更新發生錯誤，已自動重試': 'A frame failed to render and was retried',
+  '畫面更新已停止，請重新整理頁面': 'Rendering has stopped — please reload the page',
+  '發生未預期的錯誤': 'An unexpected error occurred',
+  '關閉': 'Close',
+
   /* --------------------------------------------------------- page chrome */
   '3D 倉庫場景': '3D warehouse scene',
   '正在建立倉儲數位孿生…': 'Building the warehouse digital twin…',

@@ -4,6 +4,62 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] — 2026-11-04
+
+### Added
+
+- **Runtime resilience layer** (`src/core/resilience.ts`) — a digital twin has to
+  survive whatever machine the operator happens to have. The module provides a
+  throttled, bounded log of runtime incidents, a guard for the render loop and a
+  GPU context-loss handler. It has no DOM and no Three.js dependency, so it can
+  be unit-tested on its own and used from any layer.
+- **Incident notices** (`src/ui/incidents.ts`) — every failure the resilience
+  layer detects becomes a small, dismissible card in the interface. The wording
+  lives in the translation dictionary, so a notice reads in the active language
+  and follows a language switch instead of freezing at the moment it was
+  raised.
+- **GPU context-loss recovery** — a lost WebGL context (a driver reset, a laptop
+  switching GPUs, a virtualised host reclaiming the device) no longer leaves a
+  silently blank canvas. The 3D view pauses, the 2D panels keep running, and the
+  operator is told what happened; the view resumes when the browser hands the
+  context back.
+- **Frame-loop guard** — a failing frame can no longer become sixty errors per
+  second. The loop tolerates a run of failures, reports the first one as
+  recoverable, and stops scheduling itself once the run is long enough to be
+  unambiguous.
+- **Uncaught errors are surfaced** — uncaught errors and unhandled promise
+  rejections reach the operator as a notice instead of disappearing into the
+  console. For a dashboard that is expected to run unattended, a silent
+  exception is indistinguishable from "nothing is happening right now".
+- **Runtime resilience audit** (`scripts/resilience-audit.mjs`) — a real
+  Chromium actually loses the GPU context through the `WEBGL_lose_context`
+  extension and the audit asserts that the loss is reported, that the notice
+  follows a language switch, that the simulation keeps running while the 3D
+  view is down, that the restoration is reported, that a notice can be dismissed
+  and that the console stays clean.
+- **Reproducible documentation screenshots** (`scripts/generate-screenshots.mjs`)
+  — the README screenshots were captured by hand and could silently drift away
+  from the interface the project ships. The generator drives a real Chromium
+  through the production build, lets the simulation populate and captures each
+  board through the same navigation a user uses.
+- `App.dispose()` — the interface releases its listeners and the WebGL context
+  when the page really goes away, while a page restored from the back/forward
+  cache keeps them.
+
+### Changed
+
+- `src/three/scene.ts` separates the scene update from the frame loop, so the
+  3D work can be skipped while the GPU context is gone without stopping the
+  simulation.
+- The CI browser job is now named *Browser audits* and runs the responsive and
+  the resilience audit back to back.
+- The test suite grew from 85 tests in six suites to **109 tests in eight
+  suites**.
+
+### Fixed
+
+- The changelog had two `### Fixed` sections in the same release.
+
 ## [1.2.0] — 2026-11-04
 
 ### Fixed
@@ -16,6 +72,14 @@ All notable changes to this project are documented here. The format follows
   hints) pushed the essential figures off a phone screen. They are now hidden
   below 760 px, leaving the running state, clock, speed, active tasks and frame
   rate visible without sideways scrolling.
+- **The document had no `h1` and no panel-level headings.** The interface was built
+  entirely from `h2` elements, so a screen-reader user entered the page at heading
+  level 2 with no page title at all. The brand mark is now the `h1`, each panel
+  owns an `h2` ("Operations overview" / "Details") and the blocks inside are `h3`.
+- **The panel title overwrote the first section's heading.** The left panel's name
+  was written over the text of whatever section happened to come first, so the
+  "Core KPI" heading silently became "Operations overview" and the section lost
+  its own name. The panel heading is now rendered separately.
 
 ### Added
 
@@ -69,17 +133,6 @@ All notable changes to this project are documented here. The format follows
   requiring a particular draw would otherwise pass unnoticed. The suite also
   asserts that the twelve seeds produce twelve distinct outcome profiles, so it
   cannot silently degrade into testing one branch repeatedly.
-
-### Fixed
-
-- **The document had no `h1` and no panel-level headings.** The interface was built
-  entirely from `h2` elements, so a screen-reader user entered the page at heading
-  level 2 with no page title at all. The brand mark is now the `h1`, each panel
-  owns an `h2` ("Operations overview" / "Details") and the blocks inside are `h3`.
-- **The panel title overwrote the first section's heading.** The left panel's name
-  was written over the text of whatever section happened to come first, so the
-  "Core KPI" heading silently became "Operations overview" and the section lost
-  its own name. The panel heading is now rendered separately.
 
 ### Changed
 
@@ -146,6 +199,7 @@ All notable changes to this project are documented here. The format follows
 - Release gate (`npm run predeploy`) covering type check, tests, contrast,
   build, `dist/` integrity and bundle budget.
 
+[1.3.0]: https://github.com/Kylelau339/nexus-wms-3d/releases/tag/v1.3.0
 [1.2.0]: https://github.com/Kylelau339/nexus-wms-3d/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Kylelau339/nexus-wms-3d/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Kylelau339/nexus-wms-3d/releases/tag/v1.0.0

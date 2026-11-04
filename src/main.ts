@@ -1,5 +1,6 @@
 import './styles/main.css';
 import { loadPersistedLang, t } from './core/i18n';
+import { incidents } from './core/resilience';
 import { SimulationEngine } from './domain/engine';
 import { WarehouseScene } from './three/scene';
 import { App } from './ui/app';
@@ -29,7 +30,35 @@ function supportsWebGL(): boolean {
   }
 }
 
+/**
+ * Surface anything that escapes the application's own error handling.
+ *
+ * A silent uncaught error in a long-running dashboard is indistinguishable
+ * from "nothing is happening right now", which is exactly the wrong signal for
+ * an operator who is watching a warehouse.
+ */
+function watchRuntimeErrors(): void {
+  window.addEventListener('error', (event) => {
+    incidents.report({
+      id: 'runtime-error',
+      severity: 'error',
+      detail: event.message || String(event.error ?? ''),
+    });
+  });
+
+  window.addEventListener('unhandledrejection', (event) => {
+    const reason: unknown = event.reason;
+    incidents.report({
+      id: 'runtime-rejection',
+      severity: 'error',
+      detail: reason instanceof Error ? reason.message : String(reason),
+    });
+  });
+}
+
 function boot(): void {
+  watchRuntimeErrors();
+
   const canvas = document.getElementById('scene') as HTMLCanvasElement | null;
   if (!canvas) {
     fail(t('無法初始化畫面'), 'missing #scene canvas');
@@ -72,6 +101,14 @@ function boot(): void {
 
     // Expose a small handle for debugging / automation.
     (window as unknown as { nexus: unknown }).nexus = { engine, scene };
+
+    // Release the WebGL context and the listeners when the page really goes
+    // away. A page restored from the back/forward cache keeps them, because it
+    // is about to be shown again.
+    window.addEventListener('pagehide', (event) => {
+      if (event.persisted) return;
+      app.dispose();
+    });
   } catch (error) {
     console.error(error);
     fail(t('應用程式初始化失敗'), error instanceof Error ? error.message : String(error));

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { bindContextRecovery, incidents, LoopGuard } from '../core/resilience';
 import type { SimulationEngine } from '../domain/engine';
 import type { Location } from '../domain/types';
 import { AgvFleet, TruckActor, WorkerFleet } from './actors';
@@ -49,6 +50,16 @@ export class WarehouseScene {
   private lastStockUpdate = 0;
   private flight: { from: THREE.Vector3; to: THREE.Vector3; fromTarget: THREE.Vector3; toTarget: THREE.Vector3; t: number } | null = null;
   private frameCallbacks: Array<(dt: number, time: number) => void> = [];
+  /** True while the GPU context is gone and drawing has to be skipped. */
+  private contextLost = false;
+  private unbindContext: (() => void) | null = null;
+  /** Keeps a failing frame from turning into sixty reports per second. */
+  private readonly guard = new LoopGuard({
+    log: incidents,
+    maxConsecutiveFailures: 30,
+    recoverableId: 'loop-error',
+    fatalId: 'loop-fatal',
+  });
 
   constructor(canvas: HTMLCanvasElement, engine: SimulationEngine) {
     this.engine = engine;
@@ -113,6 +124,21 @@ export class WarehouseScene {
     this.warehouse.update(engine.inventory);
     this.resize();
     window.addEventListener('resize', this.resize);
+
+    // A lost GPU context (driver reset, GPU switch, a virtualised host) leaves
+    // the canvas blank. Three.js restores its own resources when the browser
+    // hands the context back; the application only has to stop drawing and
+    // tell the operator what happened.
+    this.unbindContext = bindContextRecovery(this.renderer.domElement, {
+      onLost: () => {
+        this.contextLost = true;
+        incidents.report({ id: 'context-lost', severity: 'warning' });
+      },
+      onRestored: () => {
+        this.contextLost = false;
+        incidents.report({ id: 'context-restored', severity: 'info' });
+      },
+    });
   }
 
   /* ------------------------------------------------------------- setup */
@@ -323,9 +349,11 @@ export class WarehouseScene {
 
   start(): void {
     const loop = () => {
-      if (!this.running) return;
+      // A dead loop stops scheduling itself: retrying forever would only
+      // fill the console with the same failure over and over.
+      if (!this.running || !this.guard.healthy) return;
       requestAnimationFrame(loop);
-      this.frame();
+      this.guard.run(() => this.frame());
     };
     requestAnimationFrame(loop);
   }
@@ -341,6 +369,22 @@ export class WarehouseScene {
     this.elapsed += dt;
     const time = this.elapsed;
 
+    // While the GPU context is gone there is nothing to draw, but the
+    // simulation keeps running so the 2D panels stay live and useful.
+    if (!this.contextLost) this.updateScene(dt, time);
+
+    for (const cb of this.frameCallbacks) cb(dt, time);
+
+    if (!this.contextLost) {
+      this.controls.update();
+      this.renderer.render(this.scene, this.camera);
+    }
+
+    this.trackPerformance(dt);
+  }
+
+  /** Everything that only makes sense while the scene can actually be drawn. */
+  private updateScene(dt: number, time: number): void {
     // Camera flight
     if (this.flight) {
       this.flight.t = Math.min(1, this.flight.t + dt / 0.85);
@@ -375,12 +419,6 @@ export class WarehouseScene {
       const target = dock.occupiedBy ? 0.85 : 0.12;
       material.opacity += (target - material.opacity) * 0.08;
     }
-
-    for (const cb of this.frameCallbacks) cb(dt, time);
-
-    this.controls.update();
-    this.renderer.render(this.scene, this.camera);
-    this.trackPerformance(dt);
   }
 
   /** Adaptive quality: drop pixel ratio, then shadows, if the frame rate collapses. */
@@ -406,6 +444,8 @@ export class WarehouseScene {
   dispose(): void {
     this.running = false;
     window.removeEventListener('resize', this.resize);
+    this.unbindContext?.();
+    this.unbindContext = null;
     this.controls.dispose();
     this.renderer.dispose();
   }

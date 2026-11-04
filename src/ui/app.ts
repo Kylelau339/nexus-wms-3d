@@ -4,6 +4,7 @@ import { formatClock, formatDay } from '../domain/engine';
 import { stationName } from '../domain/labels';
 import type { CameraPreset, PickResult, WarehouseScene } from '../three/scene';
 import { bindInspectorActions, buildStages, renderInspector, type InspectorActions } from './inspector';
+import { mountIncidentHost, type IncidentHost } from './incidents';
 import {
   el,
   esc,
@@ -86,6 +87,8 @@ export class App {
   private frameCount = 0;
   private frameTime = performance.now();
   private inspectorActions: InspectorActions;
+  /** Host for the runtime incident notices. */
+  private incidents: IncidentHost | null = null;
 
   private readonly leftPanel = document.getElementById('left-panel')!;
   private readonly rightPanel = document.getElementById('right-panel')!;
@@ -120,8 +123,19 @@ export class App {
     };
   }
 
+  /**
+   * Release everything the application holds: the incident notices, the
+   * listeners on the document and the WebGL context.
+   */
+  dispose(): void {
+    this.incidents?.destroy();
+    this.incidents = null;
+    this.scene.dispose();
+  }
+
   mount(): void {
     this.applyStaticTranslations();
+    this.incidents = mountIncidentHost(document.getElementById('incidents'));
     this.buildRail();
     this.buildLangSwitcher();
     this.bindTopbar();

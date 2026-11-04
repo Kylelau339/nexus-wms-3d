@@ -55,8 +55,8 @@ jobs:
           path: dist/
           retention-days: 7
 
-  responsive:
-    name: Responsive layout audit
+  browser:
+    name: Browser audits
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -92,3 +92,6 @@ jobs:
 
       - name: Audit every breakpoint
         run: npm run audit:responsive
+
+      - name: Audit the runtime resilience
+        run: npm run audit:resilience

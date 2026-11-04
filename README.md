@@ -124,6 +124,18 @@ Light theme (white + light blue):
   polite live region exists and the landmarks are named. The heading hierarchy is
   `h1` (site) → `h2` (panel) → `h3` (section), so a screen-reader user can
   navigate the interface by heading level.
+- **Runtime resilience** — a digital twin has to survive whatever machine the
+  operator has. `src/core/resilience.ts` keeps a throttled log of runtime
+  incidents, guards the render loop so a failing frame cannot become sixty
+  errors per second, and handles a lost GPU context: the 3D view pauses, the
+  2D panels keep running, and the operator is told what happened in the
+  interface language. Uncaught errors and unhandled rejections are surfaced the
+  same way instead of disappearing into the console.
+- **Resilience audit** — `scripts/resilience-audit.mjs` drives a real Chromium,
+  actually loses the GPU context through the `WEBGL_lose_context` extension and
+  asserts that the loss is reported, that the notice follows a language switch,
+  that the simulation keeps running while the 3D view is down, that the
+  restoration is reported and that the console stays clean.
 
 ---
 
@@ -177,13 +189,14 @@ npm install
 npm run dev        # dev server on http://127.0.0.1:5173
 npm run build      # typecheck + production build into dist/
 npm run preview    # serve the production build on http://127.0.0.1:4173
-npm test           # vitest suite (85 tests)
+npm test           # vitest suite (109 tests)
 npm run test:perf  # performance budgets only
 npm run test:a11y  # accessibility audit only
 npm run typecheck  # tsc --noEmit
 npm run audit:contrast  # WCAG 2.1 contrast audit (light theme)
 npm run audit:selfcontained # verify the build makes no external requests
 npm run audit:responsive # drive a real browser through every breakpoint
+npm run audit:resilience # lose the GPU context in a real browser and check the recovery
 npm run i18n:check # dictionary completeness + no untranslated strings
 npm run i18n:keys  # print every translation key and where it is used
 npm run og         # regenerate public/og.png (needs: npm i -D sharp)
@@ -267,7 +280,7 @@ translated messages without depending on the UI.
 npm test
 ```
 
-85 tests in six suites:
+109 tests in eight suites:
 
 - `engine.test.ts` (25) — RNG determinism, layout integrity, inventory conservation and
   reservations, pick-path optimisation, wave planning, engine bootstrap, the full order
@@ -297,6 +310,14 @@ npm test
   templates, lazy domain messages, label tables) and dictionary integrity (every key
   translated, no stale entries, no Chinese left in a translation, placeholders in sync, no
   unwrapped Chinese literals anywhere in `src/`).
+- `resilience.test.ts` (15) — the runtime failure path: the incident log throttles a
+  repeated report so a subsystem that fails on every frame still produces one notice, the
+  loop guard survives a single failure and gives up on a run of them, and the GPU
+  context-loss handler cancels the event so the browser can restore the context.
+- `incidents.test.ts` (9) — the operator-facing half of the same path: an incident becomes
+  a visible card, it reads in the active language and follows a language switch, a
+  repeated incident replaces its card instead of stacking, and the dismiss button carries
+  an accessible name in both languages.
 
 The invariant suite found two genuine defects during development, both fixed:
 

@@ -967,6 +967,88 @@ select {
   white-space: nowrap;
 }
 
+/* runtime incident notices */
+.incidents {
+  position: fixed;
+  right: calc(var(--right-w) + 16px);
+  bottom: calc(var(--bottom-h) + 14px);
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  pointer-events: none;
+}
+.incident {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 9px 10px;
+  border: 1px solid var(--line-strong);
+  border-left-width: 3px;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: var(--shadow);
+  pointer-events: auto;
+  animation: incident-in 0.22s ease-out;
+}
+.incident--info {
+  border-left-color: var(--accent-4);
+}
+.incident--warning {
+  border-left-color: var(--warn);
+}
+.incident--error {
+  border-left-color: var(--danger);
+}
+.incident__body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+.incident__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg-0);
+}
+.incident__detail {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--fg-2);
+  overflow-wrap: anywhere;
+}
+.incident__close {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg-1);
+  color: var(--fg-1);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+}
+.incident__close:hover {
+  background: var(--bg-2);
+  color: var(--fg-0);
+}
+@keyframes incident-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* responsive */
 @media (max-width: 1500px) {
   :root {
@@ -1012,6 +1094,11 @@ select {
   .topbar__kpis {
     display: none;
   }
+  /* The panels become overlay drawers here, so the notices sit against the
+     viewport edge instead of next to a panel that is no longer docked. */
+  .incidents {
+    right: 16px;
+  }
 }
 @media (max-width: 760px) {
   .topbar__names small {
@@ -1028,6 +1115,14 @@ select {
   }
   .status__optional {
     display: none;
+  }
+  /* The side panels are drawers on a phone, so the notices take the full
+     width of the screen instead of hugging a panel edge that is off-canvas. */
+  .incidents {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    bottom: calc(var(--bottom-h) + 10px);
   }
 }
 

@@ -1,7 +1,7 @@
 {
   "name": "nexus-wms-3d",
   "private": true,
-  "version": "1.2.0",
+  "version": "1.3.0",
   "type": "module",
   "description": "3D warehouse management & logistics full-process digital twin",
   "license": "MIT",
@@ -41,6 +41,7 @@
     "screenshots": "node scripts/generate-screenshots.mjs",
     "audit:selfcontained": "node scripts/selfcontained-check.mjs",
     "audit:responsive": "node scripts/responsive-audit.mjs",
+    "audit:resilience": "node scripts/resilience-audit.mjs",
     "predeploy": "node scripts/predeploy.mjs"
   },
   "dependencies": {

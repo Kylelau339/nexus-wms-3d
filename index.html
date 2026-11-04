@@ -100,6 +100,10 @@
       <footer class="statusbar" id="statusbar"></footer>
 
       <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+
+      <!-- Runtime incident notices. `aria-live` lets a screen reader announce
+           a failure even though the operator is looking at the 3D scene. -->
+      <div class="incidents" id="incidents" aria-live="polite"></div>
     </div>
 
     <script type="module" src="/src/main.ts"></script>
