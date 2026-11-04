@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { prefersReducedMotion } from '../core/preferences';
 import { bindContextRecovery, incidents, LoopGuard } from '../core/resilience';
 import type { SimulationEngine } from '../domain/engine';
 import type { Location } from '../domain/types';
@@ -332,6 +333,16 @@ export class WarehouseScene {
   }
 
   private flyTo(position: THREE.Vector3, target: THREE.Vector3): void {
+    // The flight is a decorative transition, so it is skipped when the operator
+    // asked the system to reduce motion.
+    if (prefersReducedMotion()) {
+      this.flight = null;
+      this.camera.position.copy(position);
+      this.controls.target.copy(target);
+      this.controls.update();
+      return;
+    }
+
     this.flight = {
       from: this.camera.position.clone(),
       to: position.clone(),

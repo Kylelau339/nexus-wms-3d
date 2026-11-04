@@ -59,6 +59,7 @@ const NAMESPACE_URIS = new Set([
   'http://www.w3.org/2000/xmlns/',
   'http://www.purl.org/dc/elements/1.1/',
   'http://schema.org',
+  'https://schema.org',
 ]);
 
 /** Network APIs that would make the page depend on a server. */

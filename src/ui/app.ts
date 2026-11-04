@@ -241,6 +241,31 @@ export class App {
     document.querySelectorAll<HTMLElement>('[data-i18n-title]').forEach((node) => {
       node.title = t(node.dataset.i18nTitle!);
     });
+
+    this.applyStructuredData();
+  }
+
+  /**
+   * Keep the JSON-LD block in step with the active language, so a crawler
+   * that reads the page after a language switch sees a matching description.
+   */
+  private applyStructuredData(): void {
+    const node = document.getElementById('ld-json');
+    if (!node) return;
+    node.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: t('NEXUS WMS 3D · 智慧倉儲與物流運輸全流程'),
+      alternateName: 'NEXUS WMS 3D',
+      description: t(
+        'NEXUS WMS 3D — 倉儲管理與物流運輸全流程數位孿生：入庫、收貨、上架、儲位、揀貨、打包、裝車、運輸與即時 KPI 看板。',
+      ),
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Any',
+      inLanguage: getLang() === 'en' ? 'en' : 'zh-Hant',
+      license: 'MIT',
+      image: './og.png',
+    });
   }
 
   /* -------------------------------------------------------------- rail */

@@ -36,7 +36,9 @@ All notable changes to this project are documented here. The format follows
   extension and the audit asserts that the loss is reported, that the notice
   follows a language switch, that the simulation keeps running while the 3D
   view is down, that the restoration is reported, that a notice can be dismissed
-  and that the console stays clean.
+  and that the console stays clean. It also checks that a reduced-motion
+  preference makes the camera jump to a preset instead of easing there — and
+  that the camera still eases when no such preference is set.
 - **Reproducible documentation screenshots** (`scripts/generate-screenshots.mjs`)
   — the README screenshots were captured by hand and could silently drift away
   from the interface the project ships. The generator drives a real Chromium
@@ -45,6 +47,16 @@ All notable changes to this project are documented here. The format follows
 - `App.dispose()` — the interface releases its listeners and the WebGL context
   when the page really goes away, while a page restored from the back/forward
   cache keeps them.
+- **The 3D camera honours `prefers-reduced-motion`** (`src/core/preferences.ts`)
+  — the stylesheet already reduced the motion of the interface, but the camera
+  still eased the warehouse across the screen. The flight from one viewpoint to
+  another is a decorative transition, so it is now skipped and the camera jumps
+  straight to the preset. The simulation keeps running either way: the movement
+  of the trucks and the AGVs is the content, not an animation.
+- **Structured data for the public deployment** — the page carries a
+  `SoftwareApplication` JSON-LD block with the name, description, licence and
+  share-card image. It is rewritten when the operator switches language, so a
+  crawler reading the page after a switch sees a matching description.
 
 ### Changed
 
@@ -53,7 +65,7 @@ All notable changes to this project are documented here. The format follows
   simulation.
 - The CI browser job is now named *Browser audits* and runs the responsive and
   the resilience audit back to back.
-- The test suite grew from 85 tests in six suites to **109 tests in eight
+- The test suite grew from 85 tests in six suites to **114 tests in nine
   suites**.
 
 ### Fixed

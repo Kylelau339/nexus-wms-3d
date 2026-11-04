@@ -16,6 +16,11 @@
  *   4. the restoration is reported as well
  *   5. the operator can dismiss a notice
  *   6. the console stays clean — no error spam from the failed frames
+ *   7. a reduced-motion preference is honoured by the 3D camera
+ *
+ * The last check is the same kind of question: the environment says something
+ * and the runtime has to respond correctly — immediately instead of easing the
+ * warehouse across the screen.
  *
  *   node scripts/resilience-audit.mjs
  *
@@ -181,7 +186,60 @@ try {
   fail('dismiss', `could not dismiss a notice: ${String(error).split('\n')[0]}`);
 }
 
-/* -- 7. the console stays clean ------------------------------------------ */
+/* -- 7. a reduced-motion preference is honoured ------------------------- */
+
+/** The "storage" camera preset (key 3) — the camera starts on the overview preset. */
+const STORAGE = { x: -30, y: 46, z: 58 };
+
+/**
+ * Press the storage preset key and read where the camera ended up one frame
+ * later. With reduced motion it has to be there already; without it, it has to
+ * still be on its way.
+ */
+async function cameraAfterPresetKey(target) {
+  return target.evaluate(async () => {
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: '3' }));
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const scene = window.nexus?.scene;
+    if (!scene) return null;
+    const { x, y, z } = scene.camera.position;
+    return { x, y, z };
+  });
+}
+
+const distanceFromPreset = (point) =>
+  Math.hypot(point.x - STORAGE.x, point.y - STORAGE.y, point.z - STORAGE.z);
+
+const reducedPage = await context.newPage();
+await reducedPage.emulateMedia({ reducedMotion: 'reduce' });
+await reducedPage.goto(url, { waitUntil: 'networkidle' });
+await reducedPage.waitForTimeout(2500);
+const reduced = await cameraAfterPresetKey(reducedPage);
+await reducedPage.close();
+
+if (!reduced) {
+  fail('reduced-motion', 'the camera could not be read from the page');
+} else if (distanceFromPreset(reduced) > 0.5) {
+  fail(
+    'reduced-motion',
+    `the camera eased to the preset despite the reduced-motion preference (${distanceFromPreset(reduced).toFixed(1)} units away)`,
+  );
+}
+
+const normalPage = await context.newPage();
+await normalPage.goto(url, { waitUntil: 'networkidle' });
+await normalPage.waitForTimeout(2500);
+const normal = await cameraAfterPresetKey(normalPage);
+await normalPage.close();
+
+if (normal && distanceFromPreset(normal) < 1) {
+  fail(
+    'reduced-motion',
+    'the camera jumped to the preset even though no reduced-motion preference was set',
+  );
+}
+
+/* -- 8. the console stays clean ------------------------------------------ */
 
 if (consoleErrors.length > 0) {
   fail('console', `the browser reported ${consoleErrors.length} error(s): ${consoleErrors[0]}`);
@@ -204,5 +262,6 @@ console.log('  ✓ the notice follows the language switch');
 console.log('  ✓ the simulation keeps running while the 3D view is down');
 console.log('  ✓ the restoration is reported');
 console.log('  ✓ a notice can be dismissed');
+console.log('  ✓ a reduced-motion preference is honoured by the camera');
 console.log('  ✓ the console stays clean');
 console.log('\n✓ the runtime survives a GPU context loss');

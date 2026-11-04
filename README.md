@@ -4,7 +4,7 @@
 ![Pages](https://github.com/Kylelau339/nexus-wms-3d/actions/workflows/pages.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue.svg)
-![Tests](https://img.shields.io/badge/tests-85%20passing-brightgreen.svg)
+![Tests](https://img.shields.io/badge/tests-114%20passing-brightgreen.svg)
 
 # NEXUS WMS 3D — 智慧倉儲與物流運輸全流程數位孿生
 
@@ -110,7 +110,11 @@ Light theme (white + light blue):
   colours were deepened until every pair passed, so a future palette tweak
   cannot silently degrade into an unreadable UI.
 - Honours `prefers-reduced-motion`, `prefers-contrast: more` and
-  `focus-visible` keyboard focus styles.
+  `focus-visible` keyboard focus styles. The 3D camera honours
+  `prefers-reduced-motion` as well: the eased flight from one viewpoint to
+  another is a decorative transition, so it is skipped and the camera jumps.
+  The simulation itself keeps running — the movement of the trucks and the AGVs
+  is the content, not an animation.
 - **Responsive audit** — `scripts/responsive-audit.mjs` drives a real Chromium
   through eight viewports (1920 px down to 390 px) and asserts that nothing spills
   past the viewport edge, that the off-canvas drawers open and close correctly,
@@ -189,7 +193,7 @@ npm install
 npm run dev        # dev server on http://127.0.0.1:5173
 npm run build      # typecheck + production build into dist/
 npm run preview    # serve the production build on http://127.0.0.1:4173
-npm test           # vitest suite (109 tests)
+npm test           # vitest suite (114 tests)
 npm run test:perf  # performance budgets only
 npm run test:a11y  # accessibility audit only
 npm run typecheck  # tsc --noEmit
@@ -210,23 +214,28 @@ npm run predeploy    # release gate (types → tests → i18n → contrast → b
 src/
   core/        rng.ts (deterministic PRNG) · events.ts (typed emitter)
                i18n.ts (language runtime) · dictionary.ts (English strings)
+               resilience.ts (incident log, loop guard, GPU context recovery)
+               preferences.ts (runtime user preferences)
   domain/      types.ts · layout.ts · catalog.ts · inventory.ts
                picking.ts (wave planner + path optimiser) · resources.ts
                labels.ts (bilingual record helpers) · engine.ts (simulation core)
-  core/__tests__/  i18n.test.ts
+  core/__tests__/  i18n.test.ts · resilience.test.ts · preferences.test.ts
   domain/__tests__/  engine.test.ts · invariants.test.ts · stress.test.ts
                      performance.test.ts
-  ui/__tests__/    a11y.test.ts
+  ui/__tests__/    a11y.test.ts · incidents.test.ts
   three/       scene.ts (renderer/camera/picking) · warehouse.ts (geometry)
                actors.ts (trucks/workers/AGVs) · overlays.ts (paths/markers)
                materials.ts · textures.ts (procedural canvas textures)
   ui/          app.ts (shell + interaction) · sections.ts (panels)
                inspector.ts (detail panel) · charts.ts · dom.ts
+               incidents.ts (runtime failure notices)
 scripts/      contrast-audit.mjs (WCAG 2.1 palette audit)
               i18n-scan.mjs (AST scanner) · i18n-check.mjs (dictionary gate)
               predeploy.mjs (release gate) · generate-og.mjs (share card)
               selfcontained-check.mjs (no-external-dependency audit)
               responsive-audit.mjs (real-browser layout audit)
+              resilience-audit.mjs (real-browser GPU context recovery audit)
+              generate-screenshots.mjs (reproducible documentation screenshots)
 public/      og.png (Open Graph / Twitter card, 1200x630)
 docs/        architecture.md · screenshots/
 ```
@@ -280,7 +289,7 @@ translated messages without depending on the UI.
 npm test
 ```
 
-109 tests in eight suites:
+114 tests in nine suites:
 
 - `engine.test.ts` (25) — RNG determinism, layout integrity, inventory conservation and
   reservations, pick-path optimisation, wave planning, engine bootstrap, the full order
@@ -318,6 +327,9 @@ npm test
   a visible card, it reads in the active language and follows a language switch, a
   repeated incident replaces its card instead of stacking, and the dismiss button carries
   an accessible name in both languages.
+- `preferences.test.ts` (5) — the runtime preferences the 3D camera honours: the
+  reduced-motion query is asked correctly, a browser without `matchMedia` and a
+  browser that throws are both treated as "no preference".
 
 The invariant suite found two genuine defects during development, both fixed:
 
