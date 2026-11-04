@@ -8,6 +8,13 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- **Structural accessibility audit** (`src/ui/__tests__/a11y.test.ts`, 12 tests) —
+  the interface is mounted in a DOM and checked for the rules a colour contrast
+  audit can never catch: every interactive control has an accessible name, images
+  and inline graphics are labelled, form controls have labels, the document has
+  exactly one `h1` with no skipped heading levels, every `aria-labelledby` /
+  `aria-describedby` / `aria-controls` reference resolves, a polite live region
+  exists, the landmarks are named and the keyboard order is intact.
 - **Open Graph share card** — `public/og.png` (1200×630), generated procedurally by
   `scripts/generate-og.mjs` from the same design tokens as the application, so a
   shared link shows a real preview instead of a blank rectangle. The generator
@@ -33,6 +40,17 @@ All notable changes to this project are documented here. The format follows
   requiring a particular draw would otherwise pass unnoticed. The suite also
   asserts that the twelve seeds produce twelve distinct outcome profiles, so it
   cannot silently degrade into testing one branch repeatedly.
+
+### Fixed
+
+- **The document had no `h1` and no panel-level headings.** The interface was built
+  entirely from `h2` elements, so a screen-reader user entered the page at heading
+  level 2 with no page title at all. The brand mark is now the `h1`, each panel
+  owns an `h2` ("Operations overview" / "Details") and the blocks inside are `h3`.
+- **The panel title overwrote the first section's heading.** The left panel's name
+  was written over the text of whatever section happened to come first, so the
+  "Core KPI" heading silently became "Operations overview" and the section lost
+  its own name. The panel heading is now rendered separately.
 
 ### Changed
 

@@ -46,7 +46,7 @@
         <div class="topbar__brand">
           <span class="topbar__logo">NX</span>
           <div class="topbar__names">
-            <strong>NEXUS WMS</strong>
+            <h1>NEXUS WMS</h1>
             <small id="site-name" data-i18n="台北三號智能倉 · DC-07">台北三號智能倉 · DC-07</small>
           </div>
         </div>
@@ -83,9 +83,17 @@
 
       <nav class="rail" id="rail" aria-label="主要區塊" data-i18n-aria="主要區塊"></nav>
 
-      <section class="panel panel--left" id="left-panel"></section>
+      <section class="panel panel--left" id="left-panel" aria-label="作業面板">
+        <div class="panel__head">
+          <h2 class="panel__title">營運總覽</h2>
+        </div>
+      </section>
 
-      <aside class="panel panel--right" id="right-panel"></aside>
+      <aside class="panel panel--right" id="right-panel" aria-label="詳情面板">
+        <div class="panel__head">
+          <h2 class="panel__title">全流程即時狀態</h2>
+        </div>
+      </aside>
 
       <p class="sr-only" id="a11y-live" aria-live="polite"></p>
 

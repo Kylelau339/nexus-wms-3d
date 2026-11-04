@@ -191,6 +191,7 @@ export const EN: Record<string, Translation> = {
   '載重 {0}%': 'Load {0}%',
 
   /* ------------------------------------------------------------ inspector */
+  '詳情': 'Details',
   '全流程即時狀態': 'Live end-to-end status',
   '8 階段': '8 stages',
   '上架儲位': 'Put-away bins',

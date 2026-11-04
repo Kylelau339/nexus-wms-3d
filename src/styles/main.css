@@ -163,8 +163,10 @@ select {
   flex-direction: column;
   line-height: 1.25;
 }
-.topbar__names strong {
+.topbar__names h1 {
+  margin: 0;
   font-size: 13px;
+  font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--fg-0);
 }
@@ -387,6 +389,24 @@ select {
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+/* The panel heading (h2) — the sections inside it are h3. */
+.panel__head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 12px 14px 8px;
+  background: linear-gradient(180deg, rgba(250, 253, 255, 0.98) 70%, rgba(250, 253, 255, 0));
+  backdrop-filter: blur(6px);
+}
+.panel__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--fg-0);
+  text-transform: uppercase;
+}
 .panel--left {
   grid-area: left;
   border-right: 1px solid var(--line);
@@ -415,7 +435,7 @@ select {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(243, 249, 255, 0.96));
   backdrop-filter: blur(6px);
 }
-.sec__head h2 {
+.sec__head h3 {
   margin: 0;
   font-size: 11px;
   letter-spacing: 0.16em;

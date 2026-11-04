@@ -4,7 +4,7 @@
 ![Pages](https://github.com/Kylelau339/nexus-wms-3d/actions/workflows/pages.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue.svg)
-![Tests](https://img.shields.io/badge/tests-69%20passing-brightgreen.svg)
+![Tests](https://img.shields.io/badge/tests-81%20passing-brightgreen.svg)
 
 # NEXUS WMS 3D — 智慧倉儲與物流運輸全流程數位孿生
 
@@ -111,6 +111,13 @@ Light theme (white + light blue):
   cannot silently degrade into an unreadable UI.
 - Honours `prefers-reduced-motion`, `prefers-contrast: more` and
   `focus-visible` keyboard focus styles.
+- **Structural audit** — `src/ui/__tests__/a11y.test.ts` mounts the real interface
+  in a DOM and checks what a colour audit cannot: every interactive control has an
+  accessible name, images and form controls are labelled, the document has exactly
+  one `h1` with no skipped heading levels, every ARIA id reference resolves, a
+  polite live region exists and the landmarks are named. The heading hierarchy is
+  `h1` (site) → `h2` (panel) → `h3` (section), so a screen-reader user can
+  navigate the interface by heading level.
 
 ---
 
@@ -164,7 +171,7 @@ npm install
 npm run dev        # dev server on http://127.0.0.1:5173
 npm run build      # typecheck + production build into dist/
 npm run preview    # serve the production build on http://127.0.0.1:4173
-npm test           # vitest suite (69 tests)
+npm test           # vitest suite (81 tests)
 npm run typecheck  # tsc --noEmit
 npm run audit:contrast  # WCAG 2.1 contrast audit (light theme)
 npm run audit:selfcontained # verify the build makes no external requests
@@ -185,7 +192,8 @@ src/
                picking.ts (wave planner + path optimiser) · resources.ts
                labels.ts (bilingual record helpers) · engine.ts (simulation core)
   core/__tests__/  i18n.test.ts
-  domain/__tests__/  engine.test.ts · invariants.test.ts
+  domain/__tests__/  engine.test.ts · invariants.test.ts · stress.test.ts
+  ui/__tests__/    a11y.test.ts
   three/       scene.ts (renderer/camera/picking) · warehouse.ts (geometry)
                actors.ts (trucks/workers/AGVs) · overlays.ts (paths/markers)
                materials.ts · textures.ts (procedural canvas textures)
@@ -241,7 +249,7 @@ translated messages without depending on the UI.
 npm test
 ```
 
-69 tests in four suites:
+81 tests in five suites:
 
 - `engine.test.ts` (25) — RNG determinism, layout integrity, inventory conservation and
   reservations, pick-path optimisation, wave planning, engine bootstrap, the full order
@@ -257,6 +265,11 @@ npm test
   overflows the pick capacity, a truck arriving while every dock is busy — would slip past a
   one-seed suite. The suite also asserts that the seeds genuinely diverge (12 distinct
   outcome profiles), so it cannot silently degrade into testing one branch twelve times.
+- `a11y.test.ts` (12) — the rendered interface is mounted in a DOM and audited for the
+  structural rules a colour contrast check can never catch: every interactive control has
+  an accessible name, images and graphics are labelled, form controls have labels, there is
+  exactly one `h1` with no skipped heading levels, every ARIA id reference resolves, a
+  polite live region exists, landmarks are named and the keyboard order is intact.
 - `i18n.test.ts` (17) — the language runtime (locale switching, placeholders, tagged
   templates, lazy domain messages, label tables) and dictionary integrity (every key
   translated, no stale entries, no Chinese left in a translation, placeholders in sync, no

@@ -100,7 +100,7 @@ export function renderOverview(engine: SimulationEngine): SectionResult {
 
   const html = `
     <div class="sec">
-      <div class="sec__head"><h2>${t('核心 KPI')}</h2><span class="sec__count">${t('即時')}</span></div>
+      <div class="sec__head"><h3>${t('核心 KPI')}</h3><span class="sec__count">${t('即時')}</span></div>
       <div class="sec__body">
         <div class="stat-grid">
           ${stat(t('倉儲利用率'), fmtInt(kpi.warehouseUtilisation), '%')}
@@ -116,7 +116,7 @@ export function renderOverview(engine: SimulationEngine): SectionResult {
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('出貨吞吐（每小時）')}</h2><span class="sec__count">${t('近 96 筆')}</span></div>
+      <div class="sec__head"><h3>${t('出貨吞吐（每小時）')}</h3><span class="sec__count">${t('近 96 筆')}</span></div>
       <div class="sec__body">
         <canvas class="chart" id="chart-throughput" height="70"></canvas>
         <div class="legend">
@@ -126,21 +126,21 @@ export function renderOverview(engine: SimulationEngine): SectionResult {
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('區域儲位利用率')}</h2></div>
+      <div class="sec__head"><h3>${t('區域儲位利用率')}</h3></div>
       <div class="sec__body">
         <canvas class="chart" id="chart-zones" height="150"></canvas>
       </div>
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('訂單狀態分布')}</h2></div>
+      <div class="sec__head"><h3>${t('訂單狀態分布')}</h3></div>
       <div class="sec__body">
         <canvas class="chart" id="chart-orders" height="150"></canvas>
       </div>
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('異常告警')}</h2><span class="sec__count">${engine.alerts.length}</span></div>
+      <div class="sec__head"><h3>${t('異常告警')}</h3><span class="sec__count">${engine.alerts.length}</span></div>
       <div class="sec__body">
         ${
           alerts.length === 0
@@ -161,7 +161,7 @@ export function renderOverview(engine: SimulationEngine): SectionResult {
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('作業負荷')}</h2></div>
+      <div class="sec__head"><h3>${t('作業負荷')}</h3></div>
       <div class="sec__body">
         <div class="stat-grid">
           ${stat(t('進行中任務'), fmtInt(engine.activeTaskCount()), t('項'))}
@@ -198,7 +198,7 @@ export function renderInbound(engine: SimulationEngine): SectionResult {
 
   const html = `
     <div class="sec">
-      <div class="sec__head"><h2>${t('月台狀態')}</h2><span class="sec__count">${docks.length} ${t('座')}</span></div>
+      <div class="sec__head"><h3>${t('月台狀態')}</h3><span class="sec__count">${docks.length} ${t('座')}</span></div>
       <div class="sec__body">
         <table class="tbl">
           <thead><tr><th>${t('月台')}</th><th>${t('方向')}</th><th>${t('狀態')}</th><th>${t('作業單')}</th></tr></thead>
@@ -220,7 +220,7 @@ export function renderInbound(engine: SimulationEngine): SectionResult {
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('預到貨通知 ASN')}</h2><span class="sec__count">${engine.asns.length}</span></div>
+      <div class="sec__head"><h3>${t('預到貨通知 ASN')}</h3><span class="sec__count">${engine.asns.length}</span></div>
       <div class="sec__body">
         ${
           asns.length === 0
@@ -264,7 +264,7 @@ export function renderInbound(engine: SimulationEngine): SectionResult {
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('收貨 / 上架任務')}</h2></div>
+      <div class="sec__head"><h3>${t('收貨 / 上架任務')}</h3></div>
       <div class="sec__body">
         ${
           engine
@@ -337,7 +337,7 @@ export function renderInventory(engine: SimulationEngine, filters: UiFilters): S
 
   const html = `
     <div class="sec">
-      <div class="sec__head"><h2>${t('庫存總覽')}</h2></div>
+      <div class="sec__head"><h3>${t('庫存總覽')}</h3></div>
       <div class="sec__body">
         <div class="stat-grid">
           ${stat(t('庫位總數'), fmtInt(engine.layout.locations.size), t('個'))}
@@ -349,14 +349,14 @@ export function renderInventory(engine: SimulationEngine, filters: UiFilters): S
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('儲區容量')}</h2></div>
+      <div class="sec__head"><h3>${t('儲區容量')}</h3></div>
       <div class="sec__body">
         <canvas class="chart" id="chart-inv-zones" height="150"></canvas>
       </div>
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('SKU 庫存查詢')}</h2></div>
+      <div class="sec__head"><h3>${t('SKU 庫存查詢')}</h3></div>
       <div class="sec__body">
         <div class="toolbar">
           <div class="field"><input id="inv-search" type="search" placeholder="${esc(
@@ -371,7 +371,7 @@ export function renderInventory(engine: SimulationEngine, filters: UiFilters): S
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('高儲位庫存')}</h2></div>
+      <div class="sec__head"><h3>${t('高儲位庫存')}</h3></div>
       <div class="sec__body">
         <table class="tbl">
           <thead><tr><th>${t('庫位')}</th><th>${t('區')}</th><th class="num">${t('重量')}</th><th class="num">${t('利用率')}</th></tr></thead>
@@ -393,7 +393,7 @@ export function renderInventory(engine: SimulationEngine, filters: UiFilters): S
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('最近異動')}</h2></div>
+      <div class="sec__head"><h3>${t('最近異動')}</h3></div>
       <div class="sec__body">
         <table class="tbl">
           <thead><tr><th>${t('時間')}</th><th>${t('類型')}</th><th>${t('品項')}</th><th class="num">${t('數量')}</th></tr></thead>
@@ -472,7 +472,7 @@ export function renderOrders(engine: SimulationEngine, filters: UiFilters): Sect
 
   const html = `
     <div class="sec">
-      <div class="sec__head"><h2>${t('訂單篩選')}</h2><span class="sec__count">${filtered.length}/${all.length}</span></div>
+      <div class="sec__head"><h3>${t('訂單篩選')}</h3><span class="sec__count">${filtered.length}/${all.length}</span></div>
       <div class="sec__body">
         <div class="toolbar">
           <div class="field"><input id="order-search" type="search" placeholder="${esc(
@@ -493,7 +493,7 @@ export function renderOrders(engine: SimulationEngine, filters: UiFilters): Sect
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('揀貨波次')}</h2><span class="sec__count">${engine.waves.size}</span></div>
+      <div class="sec__head"><h3>${t('揀貨波次')}</h3><span class="sec__count">${engine.waves.size}</span></div>
       <div class="sec__body">
         ${
           waves.length === 0
@@ -520,7 +520,7 @@ export function renderOrders(engine: SimulationEngine, filters: UiFilters): Sect
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('銷售訂單')}</h2></div>
+      <div class="sec__head"><h3>${t('銷售訂單')}</h3></div>
       <div class="sec__body">
         ${
           filtered
@@ -596,7 +596,7 @@ export function renderTasks(engine: SimulationEngine, filters: UiFilters): Secti
 
   const html = `
     <div class="sec">
-      <div class="sec__head"><h2>${t('任務篩選')}</h2></div>
+      <div class="sec__head"><h3>${t('任務篩選')}</h3></div>
       <div class="sec__body">
         <div class="toolbar" id="task-kind-chips">
           ${kinds
@@ -612,7 +612,7 @@ export function renderTasks(engine: SimulationEngine, filters: UiFilters): Secti
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('工作佇列')}</h2><span class="sec__count">${tasks.length}</span></div>
+      <div class="sec__head"><h3>${t('工作佇列')}</h3><span class="sec__count">${tasks.length}</span></div>
       <div class="sec__body">
         ${
           tasks.length === 0
@@ -623,7 +623,7 @@ export function renderTasks(engine: SimulationEngine, filters: UiFilters): Secti
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('人員編制')}</h2><span class="sec__count">${engine.workers.length} ${t('人')}</span></div>
+      <div class="sec__head"><h3>${t('人員編制')}</h3><span class="sec__count">${engine.workers.length} ${t('人')}</span></div>
       <div class="sec__body">${workers.join('')}</div>
     </div>
   `;
@@ -665,7 +665,7 @@ export function renderTransport(engine: SimulationEngine): SectionResult {
 
   const html = `
     <div class="sec">
-      <div class="sec__head"><h2>${t('運輸 KPI')}</h2></div>
+      <div class="sec__head"><h3>${t('運輸 KPI')}</h3></div>
       <div class="sec__body">
         <div class="stat-grid">
           ${stat(t('車隊規模'), fmtInt(vehicles.length), t('輛'))}
@@ -677,7 +677,7 @@ export function renderTransport(engine: SimulationEngine): SectionResult {
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('車隊狀態')}</h2></div>
+      <div class="sec__head"><h3>${t('車隊狀態')}</h3></div>
       <div class="sec__body">
         ${vehicles
           .map(
@@ -713,7 +713,7 @@ export function renderTransport(engine: SimulationEngine): SectionResult {
     </div>
 
     <div class="sec">
-      <div class="sec__head"><h2>${t('出貨批次 TMS')}</h2><span class="sec__count">${engine.shipments.size}</span></div>
+      <div class="sec__head"><h3>${t('出貨批次 TMS')}</h3><span class="sec__count">${engine.shipments.size}</span></div>
       <div class="sec__body">
         ${
           shipments.length === 0

@@ -693,12 +693,14 @@ export class App {
     const scrollTop = this.leftPanel.scrollTop;
     if (!force && result.html === this.lastLeftHtml) return;
     this.lastLeftHtml = result.html;
-    this.leftPanel.innerHTML = result.html;
+    // The panel owns its heading (h2); the sections inside it are h3. The
+    // heading is prepended here rather than overwriting the first section's
+    // title, which would destroy that section's own name.
+    this.leftPanel.innerHTML =
+      `<div class="panel__head"><h2 class="panel__title">${esc(sectionTitle(this.section))}</h2></div>` +
+      result.html;
     result.after?.(this.leftPanel);
     this.leftPanel.scrollTop = scrollTop;
-
-    const header = this.leftPanel.querySelector('.sec__head h2');
-    if (header) header.textContent = sectionTitle(this.section);
 
     if (focusId) {
       const restored = document.getElementById(focusId) as HTMLInputElement | null;
@@ -722,7 +724,10 @@ export class App {
     const scrollTop = this.rightPanel.scrollTop;
     if (!force && html === this.lastRightHtml) return;
     this.lastRightHtml = html;
-    this.rightPanel.innerHTML = html;
+    // The panel heading is fixed ("Details"); the blocks inside it are h3 and
+    // carry the name of whatever is currently selected.
+    this.rightPanel.innerHTML =
+      `<div class="panel__head"><h2 class="panel__title">${esc(t('詳情'))}</h2></div>` + html;
     bindInspectorActions(this.rightPanel, this.engine, this.inspectorActions);
     this.rightPanel.scrollTop = scrollTop;
   }

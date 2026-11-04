@@ -79,7 +79,7 @@ export function renderInspector(
   const stages = buildStages(engine);
   const flow = `
     <div class="sec">
-      <div class="sec__head"><h2>${t('全流程即時狀態')}</h2><span class="sec__count">${t('8 階段')}</span></div>
+      <div class="sec__head"><h3>${t('全流程即時狀態')}</h3><span class="sec__count">${t('8 階段')}</span></div>
       <div class="sec__body">
         ${stages
           .map(
@@ -141,7 +141,7 @@ function renderHint(engine: SimulationEngine): string {
   const recent = engine.alerts.slice(0, 4);
   return `
     <div class="sec">
-      <div class="sec__head"><h2>${t('操作指引')}</h2></div>
+      <div class="sec__head"><h3>${t('操作指引')}</h3></div>
       <div class="sec__body">
         <div class="muted tiny" style="line-height:1.75">
           · ${t('點選')} <b>${t('貨架貨位')}</b> ${t('可查看庫存明細與揀貨來源')}<br />
@@ -153,7 +153,7 @@ function renderHint(engine: SimulationEngine): string {
       </div>
     </div>
     <div class="sec">
-      <div class="sec__head"><h2>${t('庫存價值')}</h2></div>
+      <div class="sec__head"><h3>${t('庫存價值')}</h3></div>
       <div class="sec__body">
         <div class="stat-grid">
           <div class="stat"><div class="stat__label">${t('庫存總值')}</div><div class="stat__value">${esc(
@@ -174,7 +174,7 @@ function renderHint(engine: SimulationEngine): string {
     ${
       recent.length
         ? `<div class="sec">
-      <div class="sec__head"><h2>${t('即時告警')}</h2></div>
+      <div class="sec__head"><h3>${t('即時告警')}</h3></div>
       <div class="sec__body">
         ${recent.map((a) => alertBlock(a)).join('')}
       </div>
@@ -201,7 +201,7 @@ function renderLocation(engine: SimulationEngine, id: string, _actions: Inspecto
 
   return `
     <div class="sec">
-      <div class="sec__head"><h2>${t('庫位明細')}</h2><span class="sec__count">${esc(id)}</span></div>
+      <div class="sec__head"><h3>${t('庫位明細')}</h3><span class="sec__count">${esc(id)}</span></div>
       <div class="sec__body">
         <div class="stat-grid">
           <div class="stat"><div class="stat__label">${t('庫位')}</div><div class="stat__value" style="font-size:13px">${esc(
@@ -226,7 +226,7 @@ function renderLocation(engine: SimulationEngine, id: string, _actions: Inspecto
       </div>
     </div>
     <div class="sec">
-      <div class="sec__head"><h2>${t('存放批次')}</h2><span class="sec__count">${lots.length}</span></div>
+      <div class="sec__head"><h3>${t('存放批次')}</h3><span class="sec__count">${lots.length}</span></div>
       <div class="sec__body">
         ${
           lots.length === 0
@@ -251,7 +251,7 @@ function renderLocation(engine: SimulationEngine, id: string, _actions: Inspecto
       </div>
     </div>
     <div class="sec">
-      <div class="sec__head"><h2>${t('庫位資訊')}</h2></div>
+      <div class="sec__head"><h3>${t('庫位資訊')}</h3></div>
       <div class="sec__body">
         <table class="tbl">
           <tbody>
@@ -279,7 +279,7 @@ function renderOrder(engine: SimulationEngine, id: string, _actions: InspectorAc
 
   return `
     <div class="sec">
-      <div class="sec__head"><h2>${t('訂單明細')}</h2><span class="sec__count">${esc(order.id)}</span></div>
+      <div class="sec__head"><h3>${t('訂單明細')}</h3><span class="sec__count">${esc(order.id)}</span></div>
       <div class="sec__body">
         <div class="card__top" style="margin-bottom:8px">
           <span class="dot dot--${tone}"></span>
@@ -321,7 +321,7 @@ function renderOrder(engine: SimulationEngine, id: string, _actions: InspectorAc
       </div>
     </div>
     <div class="sec">
-      <div class="sec__head"><h2>${t('訂單行')}</h2><span class="sec__count">${order.lines.length}</span></div>
+      <div class="sec__head"><h3>${t('訂單行')}</h3><span class="sec__count">${order.lines.length}</span></div>
       <div class="sec__body">
         <table class="tbl">
           <thead><tr><th>${t('料號')}</th><th>${t('庫位')}</th><th class="num">${t('數量')}</th></tr></thead>
@@ -347,7 +347,7 @@ function renderWave(engine: SimulationEngine, id: string): string {
   if (!wave) return '';
   return `
     <div class="sec">
-      <div class="sec__head"><h2>${t('波次明細')}</h2><span class="sec__count">${esc(wave.code)}</span></div>
+      <div class="sec__head"><h3>${t('波次明細')}</h3><span class="sec__count">${esc(wave.code)}</span></div>
       <div class="sec__body">
         <div class="stat-grid">
           <div class="stat"><div class="stat__label">${t('訂單數')}</div><div class="stat__value">${wave.orderIds.length}</div></div>
@@ -384,7 +384,7 @@ function renderTask(engine: SimulationEngine, id: string): string {
   const tone = statusTone(task.status);
   return `
     <div class="sec">
-      <div class="sec__head"><h2>${t('任務明細')}</h2><span class="sec__count">${esc(task.id)}</span></div>
+      <div class="sec__head"><h3>${t('任務明細')}</h3><span class="sec__count">${esc(task.id)}</span></div>
       <div class="sec__body">
         <div class="card__top" style="margin-bottom:8px">
           <span class="dot dot--${tone}"></span>
@@ -421,7 +421,7 @@ function renderShipment(engine: SimulationEngine, id: string): string {
   const tone = statusTone(shipment.status);
   return `
     <div class="sec">
-      <div class="sec__head"><h2>${t('出貨批次')}</h2><span class="sec__count">${esc(shipment.id)}</span></div>
+      <div class="sec__head"><h3>${t('出貨批次')}</h3><span class="sec__count">${esc(shipment.id)}</span></div>
       <div class="sec__body">
         <div class="card__top" style="margin-bottom:8px">
           <span class="dot dot--${tone}"></span>
@@ -462,7 +462,7 @@ function renderSku(engine: SimulationEngine, id: string): string {
   const hazard = skuHazard(sku);
   return `
     <div class="sec">
-      <div class="sec__head"><h2>${t('品項明細')}</h2><span class="sec__count">${esc(sku.id)}</span></div>
+      <div class="sec__head"><h3>${t('品項明細')}</h3><span class="sec__count">${esc(sku.id)}</span></div>
       <div class="sec__body">
         <div class="card__top" style="margin-bottom:8px">
           <span class="card__id">${esc(skuName(sku))}</span>
@@ -493,7 +493,7 @@ function renderSku(engine: SimulationEngine, id: string): string {
       </div>
     </div>
     <div class="sec">
-      <div class="sec__head"><h2>${t('存放庫位')}</h2><span class="sec__count">${locations.length}</span></div>
+      <div class="sec__head"><h3>${t('存放庫位')}</h3><span class="sec__count">${locations.length}</span></div>
       <div class="sec__body">
         <table class="tbl">
           <tbody>
