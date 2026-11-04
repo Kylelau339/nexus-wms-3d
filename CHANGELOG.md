@@ -6,8 +6,26 @@ All notable changes to this project are documented here. The format follows
 
 ## [1.2.0] — 2026-11-04
 
+### Fixed
+
+- **The language switch and speed buttons were 23 px tall.** WCAG 2.2 asks for a
+  minimum 24 px tap target on touch devices; both controls fell just short, so
+  they were hard to hit on a phone. Their vertical padding was increased.
+- **The status bar overflowed on narrow screens.** The secondary counters
+  (staff on task, vehicles in transit, orders in transit, stock and the keyboard
+  hints) pushed the essential figures off a phone screen. They are now hidden
+  below 760 px, leaving the running state, clock, speed, active tasks and frame
+  rate visible without sideways scrolling.
+
 ### Added
 
+- **Responsive layout audit** (`scripts/responsive-audit.mjs`) — a real Chromium
+  is driven through eight viewports from 1920 px down to 390 px, asserting that
+  nothing spills past the viewport edge, that the off-canvas drawers open and
+  close correctly, that the navigation rail is never covered by a drawer, that
+  the top bar and status bar stay inside the viewport, that every rail and
+  top-bar control is at least 24 px and that the 3D canvas keeps a sane size.
+  It runs as its own CI job.
 - **Structural accessibility audit** (`src/ui/__tests__/a11y.test.ts`, 12 tests) —
   the interface is mounted in a DOM and checked for the rules a colour contrast
   audit can never catch: every interactive control has an accessible name, images

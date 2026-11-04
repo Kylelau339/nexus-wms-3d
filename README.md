@@ -111,6 +111,12 @@ Light theme (white + light blue):
   cannot silently degrade into an unreadable UI.
 - Honours `prefers-reduced-motion`, `prefers-contrast: more` and
   `focus-visible` keyboard focus styles.
+- **Responsive audit** — `scripts/responsive-audit.mjs` drives a real Chromium
+  through eight viewports (1920 px down to 390 px) and asserts that nothing spills
+  past the viewport edge, that the off-canvas drawers open and close correctly,
+  that the navigation rail is never covered, that every tap target is at least
+  24 px and that the 3D canvas keeps a sane size. It catches the layout
+  regressions that only show up at the width you do not happen to be using.
 - **Structural audit** — `src/ui/__tests__/a11y.test.ts` mounts the real interface
   in a DOM and checks what a colour audit cannot: every interactive control has an
   accessible name, images and form controls are labelled, the document has exactly
@@ -177,6 +183,7 @@ npm run test:a11y  # accessibility audit only
 npm run typecheck  # tsc --noEmit
 npm run audit:contrast  # WCAG 2.1 contrast audit (light theme)
 npm run audit:selfcontained # verify the build makes no external requests
+npm run audit:responsive # drive a real browser through every breakpoint
 npm run i18n:check # dictionary completeness + no untranslated strings
 npm run i18n:keys  # print every translation key and where it is used
 npm run og         # regenerate public/og.png (needs: npm i -D sharp)
@@ -206,6 +213,7 @@ scripts/      contrast-audit.mjs (WCAG 2.1 palette audit)
               i18n-scan.mjs (AST scanner) · i18n-check.mjs (dictionary gate)
               predeploy.mjs (release gate) · generate-og.mjs (share card)
               selfcontained-check.mjs (no-external-dependency audit)
+              responsive-audit.mjs (real-browser layout audit)
 public/      og.png (Open Graph / Twitter card, 1200x630)
 docs/        architecture.md · screenshots/
 ```

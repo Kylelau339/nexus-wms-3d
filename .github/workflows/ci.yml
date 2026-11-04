@@ -54,3 +54,41 @@ jobs:
           name: nexus-wms-3d-dist
           path: dist/
           retention-days: 7
+
+  responsive:
+    name: Responsive layout audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npx vite build
+
+      - name: Serve the build
+        run: |
+          npx vite preview --port 4173 --strictPort &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4173/ > /dev/null; then
+              echo "preview server is up"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "preview server did not start"
+          exit 1
+
+      - name: Audit every breakpoint
+        run: npm run audit:responsive

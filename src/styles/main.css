@@ -258,7 +258,8 @@ select {
   border: 0;
   background: transparent;
   color: var(--fg-2);
-  padding: 5px 9px;
+  /* 6px vertical padding keeps the button above the 24px minimum tap target. */
+  padding: 6px 9px;
   cursor: pointer;
   font-family: var(--mono);
   font-size: 11px;
@@ -289,7 +290,9 @@ select {
   border: 0;
   background: transparent;
   color: var(--fg-2);
-  padding: 5px 10px;
+  /* 6px vertical padding keeps the button at 25px tall — above the 24px
+     minimum tap target that WCAG 2.2 asks for on touch devices. */
+  padding: 6px 10px;
   cursor: pointer;
   font-family: var(--sans);
   font-size: 11px;
@@ -1016,6 +1019,15 @@ select {
   }
   .topbar__brand {
     min-width: 0;
+  }
+  /* The status bar keeps the essentials (running, clock, active tasks, FPS)
+     and drops the secondary counters, so it fits a phone without the user
+     having to scroll sideways to find the important numbers. */
+  .statusbar {
+    gap: 10px;
+  }
+  .status__optional {
+    display: none;
   }
 }
 

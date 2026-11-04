@@ -746,13 +746,13 @@ export class App {
         engine.speed === 0 ? t('暫停') : `${engine.speed}×`
       }</b></span>
       <span>${t('進行中任務')} <b>${activeTasks}</b></span>
-      <span>${t('作業中人員')} <b>${busyWorkers}/${engine.workers.length}</b></span>
-      <span>${t('在途車輛')} <b>${movingVehicles}</b></span>
-      <span>${t('在途訂單')} <b>${engine.kpi.openOrders}</b></span>
+      <span class="status__optional">${t('作業中人員')} <b>${busyWorkers}/${engine.workers.length}</b></span>
+      <span class="status__optional">${t('在途車輛')} <b>${movingVehicles}</b></span>
+      <span class="status__optional">${t('在途訂單')} <b>${engine.kpi.openOrders}</b></span>
       <span class="spacer"></span>
-      <span>${t('庫存')} <b>${esc(fmtCompact(engine.inventory.totalUnits()))}</b> ${t('件')}</span>
+      <span class="status__optional">${t('庫存')} <b>${esc(fmtCompact(engine.inventory.totalUnits()))}</b> ${t('件')}</span>
       <span>${t('渲染')} <b>${Math.round(this.fps)}</b> FPS</span>
-      <span>${t('1–6 視角 · 空白暫停 · 點選貨位查看明細')}</span>
+      <span class="status__optional">${t('1–6 視角 · 空白暫停 · 點選貨位查看明細')}</span>
     `;
     void force;
   }
