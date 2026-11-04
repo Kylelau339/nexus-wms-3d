@@ -70,7 +70,14 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
-- The changelog had two `### Fixed` sections in the same release.
+- **The changelog had two `### Fixed` sections in the same release.**
+- **The lockfile did not match the manifest.** The 1.3.0 version bump changed
+  `package.json` but not `package-lock.json`, and `npm ci` refuses to install
+  when the two disagree. CI and every fresh clone would have failed at the
+  install step, with an npm error that points at npm rather than at the version
+  bump that caused it. A version check now runs before `npm ci` in CI and at
+  the start of the release gate, and it names the fix:
+  `npm install --package-lock-only`.
 
 ## [1.2.0] — 2026-11-04
 

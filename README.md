@@ -197,6 +197,7 @@ npm test           # vitest suite (114 tests)
 npm run test:perf  # performance budgets only
 npm run test:a11y  # accessibility audit only
 npm run typecheck  # tsc --noEmit
+npm run check:manifest # package.json and package-lock.json agree
 npm run audit:contrast  # WCAG 2.1 contrast audit (light theme)
 npm run audit:selfcontained # verify the build makes no external requests
 npm run audit:responsive # drive a real browser through every breakpoint
@@ -236,6 +237,7 @@ scripts/      contrast-audit.mjs (WCAG 2.1 palette audit)
               responsive-audit.mjs (real-browser layout audit)
               resilience-audit.mjs (real-browser GPU context recovery audit)
               generate-screenshots.mjs (reproducible documentation screenshots)
+              check-manifest.mjs (package.json / lockfile sync)
 public/      og.png (Open Graph / Twitter card, 1200x630)
 docs/        architecture.md · screenshots/
 ```
@@ -277,11 +279,12 @@ translated messages without depending on the UI.
   failure card is shown if the GPU stack is unavailable; all engine handlers are
   guarded, so one failing task can never halt the simulation loop.
 - **Release gate** — `npm run predeploy` is the single command that has to pass before
-  the site is published: type check → unit + invariant + stress tests → i18n dictionary
-  audit → WCAG contrast audit → production build → self-containment audit → `dist/`
-  integrity (the root must contain `index.html`, every asset referenced by it must
-  exist, and no stray or stale files may be shipped) → bundle budget (total ≤ 1.5 MB,
-  largest asset ≤ 700 KB). It exits non-zero on the first failure and is wired into CI.
+  the site is published: manifest / lockfile sync → type check → unit + invariant + stress
+  tests → i18n dictionary audit → WCAG contrast audit → production build →
+  self-containment audit → `dist/` integrity (the root must contain `index.html`, every
+  asset referenced by it must exist, and no stray or stale files may be shipped) →
+  bundle budget (total ≤ 1.5 MB, largest asset ≤ 700 KB). It exits non-zero on the first
+  failure and is wired into CI.
 
 ## Testing
 

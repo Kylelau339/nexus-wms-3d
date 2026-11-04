@@ -30,6 +30,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --port 4173 --strictPort",
     "typecheck": "tsc --noEmit",
+    "check:manifest": "node scripts/check-manifest.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:a11y": "vitest run src/ui/__tests__/a11y.test.ts",

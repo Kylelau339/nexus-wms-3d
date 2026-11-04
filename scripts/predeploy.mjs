@@ -3,12 +3,13 @@
  *
  * Runs everything that has to hold before the site is published, in one command:
  *
- *   1. type check        — tsc --noEmit
- *   2. unit + invariant tests
- *   3. i18n dictionary audit — every key translated, no stray Chinese strings
- *   4. WCAG 2.1 contrast audit of the light theme
- *   5. production build
- *   6. dist/ integrity   — index.html at the root, every referenced asset present,
+ *   1. manifest / lockfile sync — `npm ci` refuses to install when they differ
+ *   2. type check        — tsc --noEmit
+ *   3. unit + invariant tests
+ *   4. i18n dictionary audit — every key translated, no stray Chinese strings
+ *   5. WCAG 2.1 contrast audit of the light theme
+ *   6. production build
+ *   7. dist/ integrity   — index.html at the root, every referenced asset present,
  *                          no stray files, and the bundle stays inside its budget
  *
  *   npm run predeploy
@@ -60,6 +61,15 @@ if (!distOnly) {
   run('WCAG contrast audit', 'node scripts/contrast-audit.mjs');
   run('production build', 'npx vite build');
 }
+
+/**
+ * The manifest and the lockfile have to agree.
+ *
+ * `npm ci` refuses to install when they disagree, so a version bump that
+ * forgets the lockfile breaks CI and every fresh clone. Catching it here turns
+ * a confusing install failure into one line.
+ */
+run('manifest / lockfile sync', 'node scripts/check-manifest.mjs');
 
 /**
  * The self-containment audit always runs — it inspects the built output, which
