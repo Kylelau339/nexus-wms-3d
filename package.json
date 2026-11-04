@@ -4,6 +4,19 @@
   "version": "1.0.0",
   "type": "module",
   "description": "3D warehouse management & logistics full-process digital twin",
+  "license": "MIT",
+  "author": "Kyle",
+  "keywords": [
+    "wms",
+    "tms",
+    "warehouse",
+    "logistics",
+    "digital-twin",
+    "three.js",
+    "typescript",
+    "simulation",
+    "i18n"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
