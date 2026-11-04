@@ -4,7 +4,7 @@
 ![Pages](https://github.com/Kylelau339/nexus-wms-3d/actions/workflows/pages.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue.svg)
-![Tests](https://img.shields.io/badge/tests-59%20passing-brightgreen.svg)
+![Tests](https://img.shields.io/badge/tests-69%20passing-brightgreen.svg)
 
 # NEXUS WMS 3D — 智慧倉儲與物流運輸全流程數位孿生
 
@@ -48,6 +48,12 @@ domain rule being executed.
 | 11 | **補貨 / 盤點 (Replenish / Cycle count)** | Fast-mover pick faces are replenished from reserve locations; periodic cycle counts are scheduled. |
 
 Every stage is exposed as a live KPI, a work queue, and a clickable detail panel.
+
+The table above lists the eleven domain stages end to end. The inspector's live
+stage strip tracks the eight that have a continuously visible counter —
+receiving, put-away, storage, wave, picking, packing, loading and transport —
+while advance notice, dock arrival and cycle counting are visible on the
+Inbound and Inventory boards.
 
 ---
 
@@ -152,7 +158,7 @@ npm install
 npm run dev        # dev server on http://127.0.0.1:5173
 npm run build      # typecheck + production build into dist/
 npm run preview    # serve the production build on http://127.0.0.1:4173
-npm test           # vitest suite (59 tests)
+npm test           # vitest suite (69 tests)
 npm run typecheck  # tsc --noEmit
 npm run audit:contrast  # WCAG 2.1 contrast audit (light theme)
 npm run i18n:check # dictionary completeness + no untranslated strings
@@ -227,7 +233,7 @@ translated messages without depending on the UI.
 npm test
 ```
 
-59 tests in three suites:
+69 tests in four suites:
 
 - `engine.test.ts` (25) — RNG determinism, layout integrity, inventory conservation and
   reservations, pick-path optimisation, wave planning, engine bootstrap, the full order
@@ -237,6 +243,12 @@ npm test
   reservations never exceeding stock on hand, shipment weight/volume/parcels against the
   orders inside them, one truck per dock, active tasks attached to busy assignees, wave
   references, clock monotonicity and KPI ranges.
+- `stress.test.ts` (10) — the same load-bearing properties re-checked across **12 different
+  seeds**. A single seed only exercises one path through the random number generator, so a
+  defect that needs a particular draw — an oversized pallet that must be split, a wave that
+  overflows the pick capacity, a truck arriving while every dock is busy — would slip past a
+  one-seed suite. The suite also asserts that the seeds genuinely diverge (12 distinct
+  outcome profiles), so it cannot silently degrade into testing one branch twelve times.
 - `i18n.test.ts` (17) — the language runtime (locale switching, placeholders, tagged
   templates, lazy domain messages, label tables) and dictionary integrity (every key
   translated, no stale entries, no Chinese left in a translation, placeholders in sync, no

@@ -4,6 +4,41 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] — 2026-11-04
+
+### Added
+
+- **Open Graph share card** — `public/og.png` (1200×630), generated procedurally by
+  `scripts/generate-og.mjs` from the same design tokens as the application, so a
+  shared link shows a real preview instead of a blank rectangle. The generator
+  draws the isometric warehouse (racking, conveyor, AGV, truck) in vector form
+  and needs no external fonts or images.
+- `og:image`, `og:image:alt`, `twitter:card`, `twitter:title`, `twitter:description`
+  and `twitter:image` meta tags. The title and description switch with the
+  interface language, and `og:locale` alternates between `zh_TW` and `en_US`.
+- **GitHub Pages deployment workflow** (`.github/workflows/pages.yml`) — publishes
+  `dist/` on every push to `main`, so the repository carries a live demo of
+  itself. Works from a project sub-path because the build emits relative asset
+  paths.
+- **Multi-seed stress suite** (`src/domain/__tests__/stress.test.ts`, 10 tests) —
+  re-checks the load-bearing invariants across twelve different seeds. A single
+  seed only exercises one path through the random number generator, so a defect
+  requiring a particular draw would otherwise pass unnoticed. The suite also
+  asserts that the twelve seeds produce twelve distinct outcome profiles, so it
+  cannot silently degrade into testing one branch repeatedly.
+
+### Changed
+
+- `scripts/predeploy.mjs` now recognises files copied from `public/` — they are
+  referenced from a `content="…"` attribute, which the asset scan did not see.
+  The stray-file check still rejects anything that is genuinely not part of the
+  build.
+- The release gate understands `public/` assets and counts them in the bundle
+  budget: the total is now 830 KB of a 1.5 MB allowance.
+- `sharp` is intentionally **not** a project dependency. It is only needed to
+  regenerate the share card (`npm i -D sharp && npm run og`), so `npm ci` stays
+  at 62 packages for contributors.
+
 ## [1.1.0] — 2026-11-04
 
 ### Added
@@ -54,5 +89,6 @@ All notable changes to this project are documented here. The format follows
 - Release gate (`npm run predeploy`) covering type check, tests, contrast,
   build, `dist/` integrity and bundle budget.
 
+[1.2.0]: https://github.com/Kylelau339/nexus-wms-3d/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Kylelau339/nexus-wms-3d/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Kylelau339/nexus-wms-3d/releases/tag/v1.0.0

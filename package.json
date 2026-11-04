@@ -1,7 +1,7 @@
 {
   "name": "nexus-wms-3d",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.2.0",
   "type": "module",
   "description": "3D warehouse management & logistics full-process digital twin",
   "license": "MIT",
