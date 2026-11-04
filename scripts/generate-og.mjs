@@ -261,7 +261,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
     <g font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="18" font-weight="600">
       ${[
         ['11 stages', 'zh-TW / EN'],
-        ['1,800+ bins', 'WMS + TMS'],
+        ['1,704 bins', 'WMS + TMS'],
       ]
         .flatMap(([a, b], row) =>
           [a, b].map((label, col) => {

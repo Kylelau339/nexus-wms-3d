@@ -39,7 +39,7 @@ domain rule being executed.
 | 2 | **進貨月台 (Inbound dock)** | A truck arrives at the gate, drives the yard route and parks at a free dock. Dock doors glow when occupied. |
 | 3 | **收貨 (Receiving)** | Receivers book the receipt into inbound staging positions. Quantities that exceed a staging position are split across positions or diverted to the overflow buffer. |
 | 4 | **上架 (Put-away)** | AGVs carry staged pallets to a bin chosen by temperature zone and ABC class. Oversized pallets are split across bins; capacity is re-checked at execution time. |
-| 5 | **庫存 (Storage)** | 1,800+ bins across 4 storage zones (high-bay, fast-mover flow, chilled, frozen) with per-bin weight/volume ledgers and lot-level traceability. |
+| 5 | **庫存 (Storage)** | 1,704 bins across 4 storage zones (high-bay, fast-mover flow, chilled, frozen) with per-bin weight/volume ledgers and lot-level traceability. |
 | 6 | **波次 (Wave)** | Released orders are grouped into waves by priority and due date, assigned to pickers and a carrier. |
 | 7 | **揀貨 (Picking)** | An S-shape (serpentine) pick-path optimiser orders bins by zone → row → bay → level, and the route is drawn in 3D. |
 | 8 | **打包 (Packing)** | Packers consolidate lines into parcels at packing stations; order weight and volume are recomputed from what was actually picked. |
@@ -60,7 +60,7 @@ Inbound and Inventory boards.
 ## Features
 
 ### 3D scene
-- Procedural warehouse: 38 racking rows, ~1,800 bins, 4 storage zones, 11 dock doors,
+- Procedural warehouse: 38 racking rows, 1,704 bins, 4 storage zones, 11 dock doors,
   receiving/packing/QC/charging stations, conveyor spine, control-tower office, yard
   and road network.
 - **Instanced rendering** for racking, pallets and cartons — the whole facility is a

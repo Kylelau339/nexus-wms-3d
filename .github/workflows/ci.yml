@@ -30,7 +30,7 @@ jobs:
       - name: Type check
         run: npm run typecheck
 
-      - name: Unit + invariant tests
+      - name: Unit, invariant and multi-seed stress tests
         run: npm test
 
       - name: i18n dictionary audit

@@ -79,7 +79,7 @@ All notable changes to this project are documented here. The format follows
 
 - Event-driven WMS/TMS simulation engine covering the full inbound → storage →
   fulfilment → outbound → transport lifecycle.
-- Procedural 3D warehouse: ~1,800 bins, 4 storage zones, 11 docks, 28 workers,
+- Procedural 3D warehouse: 1,704 bins, 4 storage zones, 11 docks, 28 workers,
   10 AGVs, 10 trucks.
 - Six-panel interface with live KPIs, canvas charts, a 3D detail inspector and
   full keyboard support.
