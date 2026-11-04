@@ -1,0 +1,98 @@
+{
+  "name": "Bug report",
+  "about": "Something in the digital twin behaves incorrectly",
+  "title": "[bug] ",
+  "labels": ["bug"],
+  "body": [
+    {
+      "type": "markdown",
+      "attributes": {
+        "value": "Thanks for the report. The simulation is deterministic, so a **seed** and the **panel** you were on narrow it down fast."
+      }
+    },
+    {
+      "type": "input",
+      "id": "version",
+      "attributes": {
+        "label": "Version / commit",
+        "placeholder": "v1.1.0 or the short SHA"
+      },
+      "required": true
+    },
+    {
+      "type": "dropdown",
+      "id": "language",
+      "attributes": {
+        "label": "Interface language",
+        "options": ["zh-TW", "en", "other"]
+      },
+      "required": true
+    },
+    {
+      "type": "dropdown",
+      "id": "panel",
+      "attributes": {
+        "label": "Panel",
+        "options": [
+          "Operations overview",
+          "Inbound",
+          "Inventory",
+          "Order fulfilment",
+          "Personnel & tasks",
+          "Transport",
+          "3D scene",
+          "Status bar / KPIs"
+        ]
+      },
+      "required": true
+    },
+    {
+      "type": "input",
+      "id": "seed",
+      "attributes": {
+        "label": "Seed",
+        "description": "The seed the simulation was started with, if you changed it."
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "expected",
+      "attributes": {
+        "label": "What did you expect?",
+        "placeholder": "e.g. the pick accuracy KPI should stay above 95%"
+      },
+      "required": true
+    },
+    {
+      "type": "textarea",
+      "id": "actual",
+      "attributes": {
+        "label": "What happened instead?",
+        "placeholder": "Include the numbers and the exact wording you saw."
+      },
+      "required": true
+    },
+    {
+      "type": "textarea",
+      "id": "console",
+      "attributes": {
+        "label": "Browser console output",
+        "description": "Open the devtools console and paste any errors or warnings.",
+        "render": "shell"
+      }
+    },
+    {
+      "type": "checkboxes",
+      "id": "checks",
+      "attributes": {
+        "label": "Checks",
+        "options": [
+          {
+            "label": "I checked that this is not already reported",
+            "required": true
+          }
+        ]
+      }
+    }
+  ]
+}

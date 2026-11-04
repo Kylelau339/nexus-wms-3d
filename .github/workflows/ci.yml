@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Quality gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Unit + invariant tests
+        run: npm test
+
+      - name: i18n dictionary audit
+        run: npm run i18n:check
+
+      - name: WCAG 2.1 contrast audit
+        run: npm run audit:contrast
+
+      - name: Production build
+        run: npx vite build
+
+      - name: dist integrity + bundle budget
+        run: node scripts/predeploy.mjs --dist-only
+
+      - name: Upload build artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-wms-3d-dist
+          path: dist/
+          retention-days: 7

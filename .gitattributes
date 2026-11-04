@@ -1,0 +1,12 @@
+# Normalise line endings so the repository stays identical on every platform.
+* text=auto eol=lf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+
+# Keep generated lock files as-is
+package-lock.json text eol=lf

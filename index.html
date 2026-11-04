@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f7fafd" />
+    <meta name="color-scheme" content="light" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f7fd4'/%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M8 21V11M16 21V7M24 21v-6'/%3E%3C/g%3E%3C/svg%3E"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="NEXUS WMS 3D · 智慧倉儲與物流運輸全流程" />
+    <meta
+      property="og:description"
+      content="倉儲管理與物流運輸全流程 3D 數位孿生：入庫、收貨、上架、儲位、揀貨、打包、裝車、運輸與即時 KPI 看板。"
+    />
+    <meta property="og:locale" content="zh_TW" />
+    <meta
+      name="description"
+      content="NEXUS WMS 3D — 倉儲管理與物流運輸全流程數位孿生：入庫、收貨、上架、儲位、揀貨、打包、裝車、運輸與即時 KPI 看板。"
+    />
+    <title>NEXUS WMS 3D · 智慧倉儲與物流運輸全流程</title>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="scene" aria-label="3D 倉庫場景" role="img" data-i18n-aria="3D 倉庫場景"></canvas>
+
+      <div id="boot" class="boot">
+        <div class="boot__ring"></div>
+        <div class="boot__text" data-i18n="正在建立倉儲數位孿生…">正在建立倉儲數位孿生…</div>
+      </div>
+
+      <header class="topbar" id="topbar">
+        <div class="topbar__brand">
+          <span class="topbar__logo">NX</span>
+          <div class="topbar__names">
+            <strong>NEXUS WMS</strong>
+            <small id="site-name" data-i18n="台北三號智能倉 · DC-07">台北三號智能倉 · DC-07</small>
+          </div>
+        </div>
+        <div class="topbar__kpis" id="kpi-strip"></div>
+        <div class="topbar__controls">
+          <div class="clock" id="clock">
+            <span class="clock__time" id="sim-clock">--:--</span>
+            <span class="clock__date" id="sim-date">--</span>
+          </div>
+          <div class="speed" role="group" aria-label="模擬速度" data-i18n-aria="模擬速度">
+            <button
+              class="speed__btn"
+              data-speed="0"
+              title="暫停"
+              aria-label="暫停"
+              data-i18n-title="暫停"
+              data-i18n-aria="暫停"
+            >
+              ❚❚
+            </button>
+            <button class="speed__btn" data-speed="1">1×</button>
+            <button class="speed__btn is-active" data-speed="4">4×</button>
+            <button class="speed__btn" data-speed="16">16×</button>
+          </div>
+          <div
+            class="lang"
+            id="lang-switch"
+            role="group"
+            aria-label="介面語言"
+            data-i18n-aria="介面語言"
+          ></div>
+        </div>
+      </header>
+
+      <nav class="rail" id="rail" aria-label="主要區塊" data-i18n-aria="主要區塊"></nav>
+
+      <section class="panel panel--left" id="left-panel"></section>
+
+      <aside class="panel panel--right" id="right-panel"></aside>
+
+      <p class="sr-only" id="a11y-live" aria-live="polite"></p>
+
+      <footer class="statusbar" id="statusbar"></footer>
+
+      <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
