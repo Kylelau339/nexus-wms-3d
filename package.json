@@ -6,6 +6,14 @@
   "description": "3D warehouse management & logistics full-process digital twin",
   "license": "MIT",
   "author": "Kyle",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kylelau339/nexus-wms-3d.git"
+  },
+  "homepage": "https://github.com/Kylelau339/nexus-wms-3d#readme",
+  "bugs": {
+    "url": "https://github.com/Kylelau339/nexus-wms-3d/issues"
+  },
   "keywords": [
     "wms",
     "tms",

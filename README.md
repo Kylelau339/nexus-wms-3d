@@ -1,3 +1,8 @@
+![CI](https://github.com/Kylelau339/nexus-wms-3d/actions/workflows/ci.yml/badge.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue.svg)
+![Tests](https://img.shields.io/badge/tests-59%20passing-brightgreen.svg)
+
 # NEXUS WMS 3D — 智慧倉儲與物流運輸全流程數位孿生
 
 A production-grade **3D digital twin of a distribution centre**, covering the complete
@@ -261,6 +266,14 @@ Responsive down to tablet width (panels collapse into drawers).
 Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 The short version: run `npm run predeploy` before you open the PR, and check
 your change in **both** interface languages.
+
+- Issues: <https://github.com/Kylelau339/nexus-wms-3d/issues>
+- Pull requests: <https://github.com/Kylelau339/nexus-wms-3d/pulls>
+- Discussions and questions: <https://github.com/Kylelau339/nexus-wms-3d/discussions>
+
+Everything in this repository is generated or hand-written — there are no
+third-party assets, fonts or datasets, so there is nothing to license and
+nothing to clean up before shipping a fork.
 
 ## License
 

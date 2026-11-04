@@ -54,5 +54,5 @@ All notable changes to this project are documented here. The format follows
 - Release gate (`npm run predeploy`) covering type check, tests, contrast,
   build, `dist/` integrity and bundle budget.
 
-[1.1.0]: https://github.com/your-org/nexus-wms-3d/releases/tag/v1.1.0
-[1.0.0]: https://github.com/your-org/nexus-wms-3d/releases/tag/v1.0.0
+[1.1.0]: https://github.com/Kylelau339/nexus-wms-3d/releases/tag/v1.1.0
+[1.0.0]: https://github.com/Kylelau339/nexus-wms-3d/releases/tag/v1.0.0
