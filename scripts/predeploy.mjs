@@ -90,6 +90,17 @@ if (missing.length > 0) {
   process.exit(1);
 }
 
+/**
+ * Files copied verbatim from `public/` are legitimate build output even when no
+ * `<script>`/`<link>` points at them — the Open Graph card is referenced from
+ * a `content="..."` attribute, which the reference scan above does not see.
+ * They are collected from the meta tags instead, so the stray-file check below
+ * still rejects anything that is genuinely not part of the build.
+ */
+const publicAssets = [...html.matchAll(/<meta[^>]+content="([^"]+\.(?:png|jpe?g|svg|webp|ico))"/g)]
+  .map((match) => match[1])
+  .map((src) => src.replace(/^\.?\//, '').split('/').join('/'));
+
 /** Flatten dist/ and look for anything the build did not produce. */
 function walk(dir) {
   const out = [];
@@ -105,6 +116,8 @@ const files = walk(dist);
 const expected = new Set(
   references.map((href) => href.replace(/^\.?\//, '').split('/').join('/')),
 );
+for (const asset of publicAssets) expected.add(asset);
+
 const stray = files.filter((file) => {
   const rel = relative(dist, file).split(/[\\/]/).join('/');
   if (rel === 'index.html') return false;

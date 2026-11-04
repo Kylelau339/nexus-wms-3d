@@ -1,4 +1,7 @@
+![NEXUS WMS 3D](public/og.png)
+
 ![CI](https://github.com/Kylelau339/nexus-wms-3d/actions/workflows/ci.yml/badge.svg)
+![Pages](https://github.com/Kylelau339/nexus-wms-3d/actions/workflows/pages.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue.svg)
 ![Tests](https://img.shields.io/badge/tests-59%20passing-brightgreen.svg)
@@ -154,6 +157,7 @@ npm run typecheck  # tsc --noEmit
 npm run audit:contrast  # WCAG 2.1 contrast audit (light theme)
 npm run i18n:check # dictionary completeness + no untranslated strings
 npm run i18n:keys  # print every translation key and where it is used
+npm run og         # regenerate public/og.png (needs: npm i -D sharp)
 npm run predeploy    # release gate (types → tests → i18n → contrast → build →
                      # dist integrity → bundle budget)
 ```
@@ -176,7 +180,9 @@ src/
                inspector.ts (detail panel) · charts.ts · dom.ts
 scripts/      contrast-audit.mjs (WCAG 2.1 palette audit)
               i18n-scan.mjs (AST scanner) · i18n-check.mjs (dictionary gate)
-              predeploy.mjs (release gate)
+              predeploy.mjs (release gate) · generate-og.mjs (share card)
+public/      og.png (Open Graph / Twitter card, 1200x630)
+docs/        architecture.md · screenshots/
 ```
 
 The `domain/` layer is pure TypeScript with **no DOM dependency**, which is why the
@@ -274,6 +280,20 @@ your change in **both** interface languages.
 Everything in this repository is generated or hand-written — there are no
 third-party assets, fonts or datasets, so there is nothing to license and
 nothing to clean up before shipping a fork.
+
+### Deploying your own copy
+
+The build is fully static, so any static host works — no server, no API keys,
+no environment variables. Point it at `dist/` after `npm run build`.
+
+`npm run build` emits relative asset paths (`./assets/…`), so the output works
+from a domain root **and** from a project sub-path such as
+`github.io/nexus-wms-3d/` without any configuration change.
+
+The repository also ships a GitHub Actions workflow
+(`.github/workflows/pages.yml`) that publishes `dist/` to GitHub Pages on every
+push to `main`. To use it, flip **Settings → Pages → Source** to *GitHub
+Actions* once; every later push redeploys automatically.
 
 ## License
 

@@ -210,6 +210,13 @@ export class App {
     setMeta('property', 'og:title', t('NEXUS WMS 3D · 智慧倉儲與物流運輸全流程'));
     setMeta('property', 'og:description', t('倉儲管理與物流運輸全流程 3D 數位孿生：入庫、收貨、上架、儲位、揀貨、打包、裝車、運輸與即時 KPI 看板。'));
     setMeta('property', 'og:locale', getLang() === 'en' ? 'en_US' : 'zh_TW');
+    setMeta('property', 'og:image:alt', t('NEXUS WMS 3D — 倉儲管理與物流運輸全流程數位孿生：入庫、收貨、上架、儲位、揀貨、打包、裝車、運輸與即時 KPI 看板。'));
+    setMeta('name', 'twitter:title', t('NEXUS WMS 3D · 智慧倉儲與物流運輸全流程'));
+    setMeta(
+      'name',
+      'twitter:description',
+      t('倉儲管理與物流運輸全流程 3D 數位孿生：入庫、收貨、上架、儲位、揀貨、打包、裝車、運輸與即時 KPI 看板。'),
+    );
 
     document.querySelectorAll<HTMLElement>('[data-i18n]').forEach((node) => {
       node.textContent = t(node.dataset.i18n!);
