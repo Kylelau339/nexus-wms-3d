@@ -38,6 +38,7 @@
     "i18n:check": "node scripts/i18n-check.mjs",
     "i18n:keys": "node scripts/i18n-scan.mjs src --keys",
     "og": "node scripts/generate-og.mjs",
+    "screenshots": "node scripts/generate-screenshots.mjs",
     "audit:selfcontained": "node scripts/selfcontained-check.mjs",
     "audit:responsive": "node scripts/responsive-audit.mjs",
     "predeploy": "node scripts/predeploy.mjs"
